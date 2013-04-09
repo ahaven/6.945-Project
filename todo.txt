@@ -1,0 +1,9 @@
+* set implementation, type-totally:< - caseymc
+  (set:make symbol? symbol? ...) --> set
+  (set:add set? symbol? ...) --> set
+* type data type - ahaven
+  (type:make symbol? ...) --> type
+  (type:make (type?) type?) --> type
+  (type:union type? ...) --> type
+* type:<
+* built in's types - katfang
