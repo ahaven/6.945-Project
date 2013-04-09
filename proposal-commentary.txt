@@ -1,14 +1,29 @@
 Commentary by Pavel and GJS   (3)
+Responses by... us!
 
 - Are you doing type discovery, or are you writing a typed scheme?
++ We're doing a system that doesn't require you to have everything typecheck and
+  you can add new types dynamically.
+
 - Are you trying to write a particular inferencer, or some general "analysis
   framework"?
++ blah
+  
 - What features of type systems do you plan to support? Keep in mind that
   inference is impossible for some.
+  
 - Propagators is a good fit, since you'll be doing a lot of monotonic inference,
   but in types you have both co- and contra-variance. How are you going to
   handle this?
++ Cells with both a type upper bound and a lower bound. (So... intervals, kind
+  of)
+  E.g.:
+  f : A -> B
+  g : C -> D
+  f type:< g <-> B type:< D and C type:< A
+
 - There are type polymorphisms other than HM parametric polymorphisms. Any plans
   for those?
 
 - Hint: Invent a partial information structure that uses unification as merge.
+
