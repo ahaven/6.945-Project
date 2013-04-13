@@ -54,14 +54,12 @@
 
 ;; Helper; adds a single element into a set
 (define (set:insert set element)
-  (cons 'set (insert-sorted (cdr set) element)))
-
-;; Helper; puts an element to be inserted in its correct sorted place in a sorted list
-(define (insert-sorted lst element)
-  (cond ((null? lst) (list element))
-	((same? element (car lst)) lst)
-	((less? element (car lst)) (cons element lst))
-	(else (cons (car lst) (insert-sorted (cdr lst) element)))))
+  (define (insert-sorted lst element)
+    (cond ((null? lst) (list element))
+	  ((same? element (car lst)) lst)
+	  ((less? element (car lst)) (cons element lst))
+	  (else (cons (car lst) (insert-sorted (cdr lst) element)))))
+  (cons 'set (insert-sorted (set:elements set) element)))
 
 ;; Helper; adds a list of elements into a set 
 (define (set:insert-list set elements)
@@ -71,7 +69,8 @@
 
 ;;; sets are sorted in lexicographic order
 ;;; symbol < list; other possibilities ignored for now
-;;; lists are sorted by their first element and then their second and so forth 
+;;; lists are compared by their first element and then their second and so forth,
+;;; '(a b) is less than '(a b c) 
 (define (less? a b) (equal? (generic:compare a b) 'less))
 (define (greater? a b) (equal? (generic:compare a b) 'greater))
 (define (same? a b) (equal? (generic:compare a b) 'same))
