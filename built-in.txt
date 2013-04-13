@@ -1,0 +1,300 @@
+# http://web.mit.edu/scheme_v9.0.1/doc/mit-scheme-ref/Equivalence-Predicates.html#Equivalence-Predicates
+eq?     any any -> boolean
+equal?  any any -> boolean
+eqv?    any any -> boolean
+
+# http://web.mit.edu/scheme_v9.0.1/doc/mit-scheme-ref/Numerical-operations.html
+number?     any -> boolean
+-complex?   any -> boolean
+-real?      any -> boolean
+-rational?  any -> boolean
+-integer?   any -> boolean
+
+-inexact?         number -> boolean
+-exact?           number -> boolean
+-exact-integer?   number -> boolean
+-exact-nonnegative-integer? number -> boolean
+-exact-rational?  number -> boolean
+-inexact->exact   number -> number
+-exact->inexact   number -> number
+
+=     number ... -> number #!inexact
+<     number ... -> number #!inexact
+>     number ... -> number #!inexact
+<=    number ... -> number #!inexact
+>=    number ... -> number #!inexact
+
+zero?     number -> boolean #!inexact
+positive? number -> boolean #!inexact
+negative? number -> boolean #!inexact
+odd?      number -> boolean #!inexact
+even?     number -> boolean #!inexact
+
++     [number] ... -> number
+-     number ... -> number
+/     number ... -> number
+*     [number] ... -> number
+1+    number -> number
+-1    number -> number
+
+-integer-floor     integer integer -> integer
+-integer-ceiling   integer integer -> integer
+-integer-truncate  integer integer -> integer
+-integer-round     integer integer -> integer
+-integer-divide    integer integer -> qr
+-integer-divide-quotient  qr -> integer
+-integer-divide-remainder qr -> integer
+
+-quotient    integer integer -> integer
+-remainder   integer integer -> integer
+-modulo      integer integer -> integer
+max         number ... -> number
+min         number ... -> number
+abs         number -> number
+numerator   number -> number #!inexact
+denominator number -> number #!inexact
+-gcd         integer integer -> integer #!inexact
+-lcm         integer integer -> integer #!inexact
+
+floor       number -> number #!inexact
+ceiling     number -> number #!inexact
+truncate    number -> number #!inexact
+round       number -> number #!inexact
+floor->exact    number -> number
+ceiling->exact  number -> number
+truncate->exact number -> number
+round->exact    number -> number
+
+-rationalize
+-rationalize->exact
+simplest-rational       number -> rational
+simplest-exact-rational number -> rational
+
+exp   number -> number
+log   number -> number
+sin   number -> number
+cos   number -> number
+tan   number -> number
+asin  number -> number
+acos  number -> number
+atan  number -> number
+atan  number -> number
+-atan  number number -> number
+
+sqrt  number -> number
+expt  number number -> number
+
+-make-rectangular  real real -> complex
+-make-polar        real real -> complex
+-real-part         complex -> real
+-imag-part         complex -> real
+-magnitude         complex -> real
+-angle             complex -> real
+-conjugate         complex -> complex
+
+# http://web.mit.edu/scheme_v9.0.1/doc/mit-scheme-ref/Numerical-input-and-output.html#Numerical-input-and-output
+number->string    number -> string # actually is number [radix = 2,8,10,16] -> string
+string->number    string -> number # actually is string [radix = 2,8,10,16] -> number
+-flonum-parser-fast?
+-flonum-unparser-cutoff?
+
+# http://web.mit.edu/scheme_v9.0.1/doc/mit-scheme-ref/Fixnum-and-Flonum-Operations.html#Fixnum-and-Flonum-Operations
+
+# http://web.mit.edu/scheme_v9.0.1/doc/mit-scheme-ref/Random-Numbers.html#Random-Numbers
+random    number
+-flo:random-unit
+-*random-state*
+-make-random-state
+-random-state?    any -> boolean
+
+# http://web.mit.edu/scheme_v9.0.1/doc/mit-scheme-ref/External-Representation-of-Characters.html#External-Representation-of-Characters
+char->name  char -> string # technically has a boolean second arg
+name->char  string -> char
+
+# http://web.mit.edu/scheme_v9.0.1/doc/mit-scheme-ref/Comparison-of-Characters.html#Comparison-of-Characters
+char=?      char char -> boolean
+char<?      char char -> boolean
+char>?      char char -> boolean
+char<=?     char char -> boolean
+char>=?     char char -> boolean
+char-ci=?   char char -> boolean
+char-ci<?   char char -> boolean
+char-ci<=?  char char -> boolean
+char-ci>=?  char char -> boolean
+
+# http://web.mit.edu/scheme_v9.0.1/doc/mit-scheme-ref/Miscellaneous-Character-Operations.html#Miscellaneous-Character-Operations
+char?         char -> boolean
+char-upcase   char -> char
+char-downcase char -> char
+char->digit   char [radix] -> char #!
+digit->char   digit -> char
+
+# http://web.mit.edu/scheme_v9.0.1/doc/mit-scheme-ref/Internal-Representation-of-Characters.html#Internal-Representation-of-Characters
+
+# http://web.mit.edu/scheme_v9.0.1/doc/mit-scheme-ref/Construction-of-Strings.html#Construction-of-Strings
+make-string   non-neg-integer [char] -> string
+string        [char] ... -> string
+-list->string char-list -> string
+string-copy   string -> string
+
+# http://web.mit.edu/scheme_v9.0.1/doc/mit-scheme-ref/Selecting-String-Components.html#Selecting-String-Components
+string?       any -> boolean
+string-length string -> number
+string->null? string -> boolean
+string-ref    string non-neg-integer -> char
+string-set!   string non-neg-integer char -> _|_
+
+# http://web.mit.edu/scheme_v9.0.1/doc/mit-scheme-ref/Comparison-of-Strings.html#Comparison-of-Strings
+string=?        string string -> boolean
+substring=?     string non-neg-integer non-neg-integer string non-neg-integer non-neg-integer -> boolean
+string-ci=?     string string -> boolean
+substring-ci=?  string non-neg-integer non-neg-integer string non-neg-integer non-neg-integer -> boolean
+string<?        string string -> boolean
+substring<?     string non-neg-integer non-neg-integer string non-neg-integer non-neg-integer -> boolean
+string>?        string string -> boolean
+string<=?       string string -> boolean
+string>=?       string string -> boolean
+string-ci<?     string string -> boolean
+substring-ci<?  string non-neg-integer non-neg-integer string non-neg-integer non-neg-integer -> boolean
+string-ci>?     string string -> boolean
+string-ci<=?    string string -> boolean
+string-ci>=?    string string -> boolean
+-string-compare     string string [() -> A] [() -> B] [() -> C] -> D
+-string-compare-ci  string string [() -> A] [() -> B] [() -> C] -> D
+string-hash     string -> number
+string-hash-mod string number -> number
+
+# http://web.mit.edu/scheme_v9.0.1/doc/mit-scheme-ref/Alphabetic-Case-in-Strings.html#Alphabetic-Case-in-Strings
+string-capitalized?     string -> boolean
+substring-capitalized?  string non-neg-integer non-neg-integer -> boolean
+string-upper-case?      string -> boolean
+substring-upper-case?   string non-neg-integer non-neg-integer -> boolea
+string-lower-case?      string -> boolean
+substring-lower-case?   string non-neg-integer non-neg-integer -> boolean
+string-capitalize       string -> string
+string-capitalize!      string -> boolean #? may just always be true or error
+substring-capitalize!   string non-neg-integer non-neg-integer -> boolean #? may just always be true or error
+string-downcase         string -> string
+string-downcase!        string -> boolean #? may just always be true or error
+substring-downcase!     string non-neg-integer non-neg-integer -> boolean #? may just always be true or error
+string-upcase           string -> string
+string-upcase!          string -> boolean #? may just always be true or error
+substring-upcase!       string non-neg-integer non-neg-integer -> boolean #? may just always be true or error
+
+# http://web.mit.edu/scheme_v9.0.1/doc/mit-scheme-ref/Cutting-and-Pasting-Strings.html#Cutting-and-Pasting-Strings
+string-append           [string] ... -> string 
+substring               string non-neg-integer non-neg-integer -> string
+string-head             string non-neg-integer -> string
+string-tail             string non-neg-integer -> string
+string-pad-left         string non-neg-integer [char] -> string
+string-trim             string [char-set] -> string
+string-trim-left        string [char-set] -> string
+string-trim-right       string [char-set] -> string
+
+# http://web.mit.edu/scheme_v9.0.1/doc/mit-scheme-ref/Searching-Strings.html#Searching-Strings
+string-search-forward     string string -> non-neg-integer | #f
+substring-search-forward  string string non-neg-integer non-neg-integer -> non-neg-integer | #f
+string-search-backward    string string -> non-neg-integer | #f
+substrig-search-backward  string string non-neg-integer non-neg-integer -> non-neg-integer | #f 
+-string-search-all         string string -> list[non-neg-integer]
+-substring-search-all      string string non-neg-integer non-neg-integer -> list[non-neg-integer]
+substring?                string string -> boolean
+string-find-next-char     string char -> non-neg-integer | #f
+substring-find-next-char  string non-neg-integer non-neg-integer char -> non-neg-integer | #f
+string-find-next-char-ci      string char -> non-neg-integer | #f
+substring-find-next-char-ci   string non-neg-integer non-neg-integer char -> non-neg-integer | #f
+string-find-next-char-in-set      string char-set -> non-neg-integer | #f
+substring-find-next-char-in-set   string non-neg-integer non-neg-integer char-set -> non-neg-integer | #f
+string-find-previous-char     string char -> non-neg-integer | #f
+substring-find-previous-char  string non-neg-integer non-neg-integer char -> non-neg-integer | #f
+string-find-previous-char-ci      string char -> non-neg-integer | #f
+substring-find-previous-char-ci   string non-neg-integer non-neg-integer char -> non-neg-integer | #f
+string-find-previous-char-in-set      string char-set -> non-neg-integer | #f
+substring-find-previous-char-in-set   string non-neg-integer non-neg-integer char-set -> non-neg-integer | #f
+
+# http://web.mit.edu/scheme_v9.0.1/doc/mit-scheme-ref/Searching-Strings.html#Searching-Strings
+string-match-forward        string string -> non-neg-integer
+substring-match-forward     string non-neg-integer non-neg-integer string non-neg-integer non-neg-integer -> non-neg-integer
+string-match-forward-ci     string string -> non-neg-integer
+substring-match-forward-ci  string non-neg-integer non-neg-integer string non-neg-integer non-neg-integer -> non-neg-integer
+
+string-match-backward       string string -> non-neg-integer
+substring-match-backward    string non-neg-integer non-neg-integer string non-neg-integer non-neg-integer -> non-neg-integer
+string-match-backward-ci    string string -> non-neg-integer
+substring-match-backward-ci string non-neg-integer non-neg-integer string non-neg-integer non-neg-integer -> non-neg-integer
+
+string-prefix?        string string -> boolean
+substring-prefix?     string non-neg-integer non-neg-integer string non-neg-integer non-neg-integer -> boolean
+string-prefix-ci?     string string -> boolean
+substring-prefix-ci?  string non-neg-integer non-neg-integer string non-neg-integer non-neg-integer -> boolean
+
+string-suffix?        string string -> boolean
+substring-suffix?     string non-neg-integer non-neg-integer string non-neg-integer non-neg-integer -> boolean
+string-suffix-ci?     string string -> boolean
+substring-suffix-ci?  string non-neg-integer non-neg-integer string non-neg-integer non-neg-integer -> boolean
+
+# http://web.mit.edu/scheme_v9.0.1/doc/mit-scheme-ref/Regular-Expressions.html#Regular-Expressions
+
+# http://web.mit.edu/scheme_v9.0.1/doc/mit-scheme-ref/Modification-of-Strings.html#Modification-of-Strings
+string-replace      string char char -> string
+substring-replace   string non-neg-integer non-neg-integer char char -> string
+-string-replace!     string char char -> _|_
+-substring-replace!  string non-neg-integer non-neg-integer char char -> _|_
+
+-string-fill!        string char -> boolean #? true #!modifies
+-substring-fill!     string non-neg-integer non-neg-integer char -> boolean #? true #!modifies
+-substring-move-left!
+-substring-move-right!
+
+reverse-string      string -> string
+reverse-substring   string non-neg-integer non-neg-integer -> string
+-reverse-string!    string -> boolean #? true #!modifies
+-reverse-substring  string non-neg-integer non-neg-integer -> boolean #? true #!modifies
+
+# http://web.mit.edu/scheme_v9.0.1/doc/mit-scheme-ref/Variable_002dLength-Strings.html#Variable_002dLength-Strings
+# http://web.mit.edu/scheme_v9.0.1/doc/mit-scheme-ref/Byte-Vectors.html#Byte-Vectors
+
+# http://web.mit.edu/scheme_v9.0.1/doc/mit-scheme-ref/Booleans.html#Booleans
+boolean?    any -> boolean
+not         any -> boolean
+false?      any -> boolean
+boolean=?   boolean boolean -> boolean #! not strictly true
+boolean/and [any] -> boolean
+boolean/or  [any] -> boolean
+
+# http://web.mit.edu/scheme_v9.0.1/doc/mit-scheme-ref/Symbols.html#Symbols
+symbol?         any -> boolean
+symbol->string  symbol -> string
+-intern
+-intern-soft
+string->symbol  string -> symbol
+-string->uninterned-symbol
+-generate-uninterned-symbol
+symbol-append   [symbol] -> symbol
+symbol-hash     symbol -> non-neg-integer
+symbol-hash-mod symbol pos-integer -> non-neg-integer
+symbol<?        symbol symbol -> boolean
+
+
+
+--- end ---
+
+
+
+ 
+and boolean boolean ... -> boolean
+or  boolean boolean ... -> boolean
+
+
+
+if
+let
+begin
+cond
+case
+apply
+map
+for-each
+fold
+call/cc
+set!
