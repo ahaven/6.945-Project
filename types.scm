@@ -162,7 +162,7 @@
 
 ;; Intersection of multiple types
 (define (type:intersection . types)
-  (reduce type:binary-intersection any types))
+  (reduce type:binary-intersection type:any types))
 
 (define type-of
   (make-generic-operator 1 'type-of
