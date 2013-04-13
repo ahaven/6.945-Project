@@ -7,3 +7,7 @@
   (type:union type? ...) --> type
 * type:<
 * built in's types - katfang
+
+
+FUTURE
+* set! - if it sets to a different type, is that "wrong"? Or do we just have set! change the type of the variable?

@@ -51,7 +51,7 @@
 (declare-explicit-guard type:any? (guard <type> type:any?))
 
 ;; Type that is the lower bound of all types
-(define type:none `(type ,(set:make)))
+(define type:none (list 'type (set:make)))
 (define (type:none? t) (type:= t type:none))
 (declare-explicit-guard type:none? (guard <type> type:none?))
 
@@ -69,7 +69,7 @@
 (defhandler type:<=
   (lambda (t1 t2)
     (and (all? (map type:<= (input-types t2) (input-types t1)))
-         (type:< (output-type t1) (output-type t2))))
+         (type:<= (output-type t1) (output-type t2))))
   function-type?
   function-type?)
 
@@ -94,8 +94,8 @@
 
 (defhandler type:binary-union
   (lambda (t1 t2)
-    (type:make (set:union (type-symbols t1)
-                          (type-symbols t2))))
+    (list 'type (set:union (type-symbols t1)
+			   (type-symbols t2))))
   primitive-type?
   primitive-type?)
 
@@ -134,8 +134,8 @@
 
 (defhandler type:binary-intersection
   (lambda (t1 t2)
-    (type:make (set:intersection (type-symbols t1)
-                                 (type-symbols t2))))
+    (list 'type (set:intersection (type-symbols t1)
+				  (type-symbols t2))))
   primitive-type?
   primitive-type?)
 
