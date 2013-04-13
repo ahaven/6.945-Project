@@ -1,15 +1,11 @@
-(define (tagged-list? l tag)
-  (and (pair? l)
-       (= (car l) tag)))
-
-(define (all? l) (reduce and #t l))
+(define (all? l) (reduce boolean/and #t l))
 
 (define (type? t)
   (tagged-list? t 'type))
 
 ;; Make a type representing one or more primitive types
 (define (type:make . symbols)
-  (if (there-exists? (lambda (s) (not (symbol? s))) symbols)
+  (if (there-exists? symbols (lambda (s) (not (symbol? s))))
       (error "Can't make a primitive type out of non-symbol" symbols))
   `(type ,(apply set:make symbols)))
 
@@ -23,7 +19,7 @@
 ;; Make a type representing a function
 ;; Requires inputs to be a list of types and output to be a type
 (define (type:function inputs output)
-  (if (there-exists? (lambda (t) (not (type? t))) inputs)
+  (if (there-exists? inputs (lambda (t) (not (type? t))))
       (error ("Function input type that isn't a type" inputs)))
   (if (not (type? output))
       (error ("Function output type that isn't a type" output)))
@@ -48,7 +44,7 @@
 (define (type:any? t) (type:= t type:any))
 
 ;; Type that is the lower bound of all types
-(define type:none '(type (set:make)))
+(define type:none (list 'type (set:make)))
 (define (type:none? t) (type:= t type:none))
 
 ;; This is a partial order on types
