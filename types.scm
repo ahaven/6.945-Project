@@ -3,57 +3,71 @@
 (define (type? t)
   (tagged-list? t 'type))
 
-(define <type>
-  (make-class '<type> '() '()))
+(define-class <type> ())
+(define (type? t) (subclass? (object-class t) <type>))
 (declare-type-tester type? <type>)
 
+;; Type that is the lower bound of all types
+(define-class (<none-type> (constructor ())) (<type>))
+(define type:none (make-none-type))
+(define (type:none? t) (eq? t type:none))
+(declare-type-tester type:none? <none-type>)
+
+;; Type that is the upper bound of all types
+(define-class (<any-type> (constructor ())) (<type>))
+(define type:any (make-any-type))
+(define (type:any? t) (eq? t type:any))
+(declare-type-tester type:any? <any-type>)
+
 ;; Make a type representing one or more primitive types
+(define-generic type-symbols (object))
+(define-class (<primitive-type> (constructor (symbols))) (<type>)
+  (symbols accessor type-symbols))
+
 (define (type:make . symbols)
   (if (there-exists? symbols (lambda (s) (not (symbol? s))))
       (error "Can't make a primitive type out of non-symbol" symbols))
-  `(type ,(apply set:make symbols)))
-
-(define (type-symbols type)
-  (cadr type))
+  (if (null? symbols)
+      type:none
+      (make-primitive-type (apply set:make symbols))))
 
 ;; Query whether this type is a set of primitive types
-(define (primitive-type? type)
-  (and (type? type) (set? (type-symbols type))))
-(declare-explicit-guard primitive-type? (guard <type> primitive-type?))
+(define (primitive-type? t) (subclass? (object-class t) <primitive-type>))
+(declare-type-tester primitive-type? <primitive-type>) 
 
 ;; Make a type representing a function
 ;; Requires inputs to be a list of types and output to be a type
+(define-generic input-types (object))
+(define-generic output-type (object))
+(define-class (<function-type> (constructor (inputs output))) (<type>)
+  (inputs accessor input-types)
+  (output accessor output-type))
+
 (define (type:function inputs output)
   (if (there-exists? inputs (lambda (t) (not (type? t))))
-      (error ("Function input type that isn't a type" inputs)))
+      (error "Function input type that isn't a type" inputs))
   (if (not (type? output))
-      (error ("Function output type that isn't a type" output)))
-  `(type (function ,inputs ,output)))
-
-(define (input-types function-type)
-  (cadadr function-type))
-
-(define (output-type function-type)
-  (caddr (cadr function-type)))
+      (error "Function output type that isn't a type" output))
+  (make-function-type inputs output))
 
 ;; Predicate for types representing functions
-(define (function-type? t)
-  (and (type? t)
-       (tagged-list? (cadr t) 'function)))
-(declare-explicit-guard function-type? (guard <type> function-type?))
+(define (function-type? t) (subclass? (object-class t) <function-type>))
+(declare-type-tester function-type? <function-type>)
 
 ;; Equality between types
-(define type:= equal?)
+(define type:=
+  (make-generic-operator 2 'type:= equal?))
 
-;; Type that is the upper bound of all types
-(define type:any '(type any))
-(define (type:any? t) (type:= t type:any))
-(declare-explicit-guard type:any? (guard <type> type:any?))
+(defhandler type:=
+  (lambda (t1 t2) (equal? (type-symbols t1) (type-symbols t2)))
+  primitive-type?
+  primitive-type?)
 
-;; Type that is the lower bound of all types
-(define type:none (list 'type (set:make)))
-(define (type:none? t) (type:= t type:none))
-(declare-explicit-guard type:none? (guard <type> type:none?))
+(defhandler type:=
+  (lambda (t1 t2) (and (all? (map type:= (input-types t1) (input-types t2)))
+                       (type:= (output-type t1) (output-type t2))))
+  function-type?
+  function-type?)
 
 ;; This is a partial order on types
 (define type:<=
@@ -94,8 +108,9 @@
 
 (defhandler type:binary-union
   (lambda (t1 t2)
-    (list 'type (set:union (type-symbols t1)
-			   (type-symbols t2))))
+    (make-primitive-type
+     (set:union (type-symbols t1)
+                (type-symbols t2))))
   primitive-type?
   primitive-type?)
 
@@ -134,8 +149,9 @@
 
 (defhandler type:binary-intersection
   (lambda (t1 t2)
-    (list 'type (set:intersection (type-symbols t1)
-				  (type-symbols t2))))
+    (make-primitive-type
+     (set:intersection (type-symbols t1)
+                       (type-symbols t2))))
   primitive-type?
   primitive-type?)
 
@@ -207,3 +223,22 @@
                   args)))
         (type:function (except-last-pair types) (car (last-pair types))))))
 
+;; pretty-printing for types
+(define type:->symbols
+  (make-generic-operator 1 'type:->symbols))
+
+(defhandler type:->symbols
+  (lambda (t)
+    (let ((symbols (set:elements (type-symbols t))))
+      (cond
+       ((null? symbols) 'none)
+       ((= (length symbols) 1) (car symbols))
+       (else (cons '? symbols)))))
+  primitive-type?)
+
+(defhandler type:->symbols
+  (lambda (t) `(,@(map type:->symbols (input-types t)) -> ,(type:->symbols (output-type t))))
+  function-type?)
+
+(defhandler type:->symbols (lambda (t) 'any) type:any?)
+(defhandler type:->symbols (lambda (t) 'none) type:none?)
