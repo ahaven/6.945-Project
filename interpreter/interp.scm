@@ -61,6 +61,14 @@
 		       environment))
   begin?)
 
+(defhandler eval
+  (lambda (expression environment)
+    (build-type-cell expression environment))
+  type-eval?)
+
+(define (build-type-cell exp env)
+  (error "build-type-cell not implemented"))
+
 (define (evaluate-sequence actions environment)
   (cond ((null? actions)
 	 (error "Empty sequence"))

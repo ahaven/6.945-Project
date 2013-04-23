@@ -182,6 +182,10 @@
 
 ;;; Another special form that will be needed later.
 
+(define (type-eval? exp)
+  (and (pair? exp)
+       (eq? (car exp) 'type-eval)))
+
 (define (amb? exp)
   (and (pair? exp) (eq? (car exp) 'amb)))
 
