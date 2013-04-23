@@ -11,3 +11,21 @@
 
 FUTURE
 * set! - if it sets to a different type, is that "wrong"? Or do we just have set! change the type of the variable?
+
+---
+
+Goal: Put in a function's code, get its type.
+
+* Make a version of the evaluator that analyzes type
+  ** Make type-eval so that this is possible; use propagators somehow
+* Decide how to "save" known typed things - put them in the environment 
+  that stores all the other types?
+     name -> {code} [+ {type info = cell} ]
+
+* So how do propagators give us an answer?
+  build-type-cell expr env -> cell
+  primitive-application
+  application
+  cond
+  if
+  et cetera
