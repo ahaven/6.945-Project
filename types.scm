@@ -208,6 +208,11 @@
 ;; The type of booleans is then the set of these two types
 (define type:boolean (type:make 'bool:t 'bool:f))
 (define type:number (type:make 'number))
+(define type:false (type:make 'bool:t))
+(define type:true (type:make 'bool:f))
+(define type:string (type:make 'string))
+(define type:char (type:make 'char))
+(define type:symbol (type:make 'symbol))
 
 ;; Shorthand for writing function types. The last argument specified is
 ;; the function's return type. Symbolic arguments will be boxed into types

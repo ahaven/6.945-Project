@@ -140,7 +140,7 @@ string-copy   string -> string
 # http://web.mit.edu/scheme_v9.0.1/doc/mit-scheme-ref/Selecting-String-Components.html#Selecting-String-Components
 string?       any -> boolean
 string-length string -> number
-string->null? string -> boolean
+-string->null? string -> boolean
 string-ref    string non-neg-integer -> char
 string-set!   string non-neg-integer char -> _|_
 
@@ -195,7 +195,7 @@ string-trim-right       string [char-set] -> string
 string-search-forward     string string -> non-neg-integer | #f
 substring-search-forward  string string non-neg-integer non-neg-integer -> non-neg-integer | #f
 string-search-backward    string string -> non-neg-integer | #f
-substrig-search-backward  string string non-neg-integer non-neg-integer -> non-neg-integer | #f 
+substring-search-backward  string string non-neg-integer non-neg-integer -> non-neg-integer | #f 
 -string-search-all         string string -> list[non-neg-integer]
 -substring-search-all      string string non-neg-integer non-neg-integer -> list[non-neg-integer]
 substring?                string string -> boolean

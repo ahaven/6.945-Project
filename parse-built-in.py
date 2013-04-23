@@ -9,10 +9,12 @@ def default_proc_output(name, inputs, outputs):
                            ",".join(inputs),
                            ",".join(outputs))
     
-numerical_subtypes = ['rational', 'non-neg-integer', 'integer', 'pos-integer']
+numerical_subtypes = ['rational', 'non-neg-integer', 'integer', 'pos-integer', 'radix'] # radix is a bit of a hack
 def fix_type(token):
     global numerical_subtypes
-    if token in numerical_subtypes:
+    if len(token) > 5 and token[0:5] == 'type:':
+      return token
+    elif token in numerical_subtypes:
         return "type:number"
     elif token == "#f":
         return "type:false"
@@ -66,14 +68,15 @@ def write_def_handlers():
 
 
     def make_output(name, inputs, outputs):
+        # TODO look to see if we have such a cell in a global thing
+        # Otherwise create new cell
         return """
 (defhandler build-primitive-type-cell
   (lambda (expr)
-    ;;; TODO look to see if we have such a cell in a global thing
-    ;;; Otherwise create new cell
-    (let ((cell (make-cell)))
-      (add-content cell (-> %s %s))
-      cell))
+    (get-primitive-cell
+      expr 
+      (lambda (cell)
+        (add-content cell (-> %s %s)))))
   (eq-primitive? %s))
         """ % (" ".join(inputs), " ".join(outputs), name)
 

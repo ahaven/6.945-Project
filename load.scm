@@ -3,3 +3,5 @@
 (load "propagator/load")
 (load "types")
 (load "type-intervals")
+(load "build-primitive-type-cell")
+(load "primitive-def-handlers")
