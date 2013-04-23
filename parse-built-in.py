@@ -4,8 +4,26 @@ def read_file():
     lines = f.readlines()
   return lines
 
-def parse_line(line):
-  numerical_subtypes = ['rational', 'non-neg-integer', 'integer', 'pos-integer']
+def default_proc_output(name, inputs, outputs):
+  return "%s: %s -- %s\n" % (name,
+                           ",".join(inputs),
+                           ",".join(outputs))
+    
+numerical_subtypes = ['rational', 'non-neg-integer', 'integer', 'pos-integer']
+def fix_type(token):
+    global numerical_subtypes
+    if token in numerical_subtypes:
+        return "type:number"
+    elif token == "#f":
+        return "type:false"
+    elif token == "#t":
+        return "type:true"
+    elif token == "_|_":
+        return "type:none"
+    else:
+        return "type:%s" % token
+
+def parse_line(line, make_output):
   if line[0] in ['#', '-', '\n']:
     return None
   line = line.strip().split(" ")
@@ -26,26 +44,39 @@ def parse_line(line):
         token = token[1:-1]
       elif token == '...': ## that listy-thing
         token = proc_inputs[-1]
-      elif token in numerical_subtypes:
-        token = 'number'
-      proc_inputs.append(token)
+      proc_inputs.append(fix_type(token))
     elif state == 'OUTPUTS':
-      if token in numerical_subtypes: 
-        token = 'number'
-      proc_outputs.append(token)
-  return "%s: %s -- %s\n" % (proc_name,
-                           ",".join(proc_inputs),
-                           ",".join(proc_outputs))
-      
-    
+      proc_outputs.append(fix_type(token))
+  return make_output(proc_name, proc_inputs, proc_outputs)
 
-def parse_all(lines):
-  with open("built-in-output.txt", "w") as f:
+def parse_all(lines, 
+              output_file='built-in-output.txt', 
+              make_output = default_proc_output):
+  with open(output_file, "w") as f:
     for line in lines:
       if line == '--- end ---\n':
         break
-      parsed = parse_line(line)
+      parsed = parse_line(line, make_output)
       if parsed:
         f.write(parsed)
 
-parse_all(read_file())
+def write_def_handlers():
+    lines = read_file()
+    output_file = 'primitive-def-handlers.scm'
+
+
+    def make_output(name, inputs, outputs):
+        return """
+(defhandler build-primitive-type-cell
+  (lambda (expr)
+    ;;; TODO look to see if we have such a cell in a global thing
+    ;;; Otherwise create new cell
+    (let ((cell (make-cell)))
+      (add-content cell (-> %s %s))
+      cell))
+  (eq-primitive? %s))
+        """ % (" ".join(inputs), " ".join(outputs), name)
+
+    parse_all(lines, output_file, make_output)
+
+write_def_handlers()

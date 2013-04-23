@@ -86,7 +86,7 @@
       (eval (assignment-value expression) environment)
       environment))
   assignment?)
-
+
 (define apply
   (make-generic-operator 3 'apply default-apply))
 
