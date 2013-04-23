@@ -1,0 +1,19 @@
+Tree of Types                               
+                         T = {num, bool, ...} (aka "any")
+                         |
+             ... {num, bool, symbol} ... (functions) ...
+                   /             
+             {num, bool}
+               /     \
+          number     boolean     symbol
+                \       |       /
+                  upside down T (aka "none")
+
+Function Types, list-of-sets style (I think)
+{{#} -> {#}, {string} -> {#f}}
+Example function of 2 arguments:
+({#, bool}, {string}) -> {char}
+...or, in proper syntax:
+(type {(function ({#, bool}, {string}) {char})})
+
+apply: (a->b, a) -> b

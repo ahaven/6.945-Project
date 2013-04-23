@@ -1,3 +1,5 @@
+(load "interpreter/ghelper")
 (load "sets")
+(load "propagator/load")
 (load "types")
 (load "type-intervals")
