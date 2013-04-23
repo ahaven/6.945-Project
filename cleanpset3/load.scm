@@ -12,7 +12,5 @@
 
 (load "interp" generic-evaluation-environment)
 (load "repl" generic-evaluation-environment)
-(load "general-procedures" generic-evaluation-environment)
-(load "kons" generic-evaluation-environment)
 
 (ge generic-evaluation-environment)

@@ -16,8 +16,6 @@
 (define (default-apply procedure operands calling-environment)
   (error "Unknown procedure type" procedure))
 
-
-
 (define eval
   (make-generic-operator 2 'eval default-eval))
 
@@ -90,19 +88,40 @@
 (define apply
   (make-generic-operator 3 'apply default-apply))
 
+;;; Original version bundled with pset
+;(defhandler apply
+;  (lambda (procedure operands calling-environment)
+;    (define (evaluate-list operands)
+;      (cond ((null? operands) '())
+;	    ((null? (rest-operands operands))
+;	     (list (eval (first-operand operands)
+;			 calling-environment)))
+;	    (else
+;	     (cons (eval (first-operand operands)
+;			 calling-environment)
+;		   (evaluate-list (rest-operands operands))))))
+;    (apply-primitive-procedure procedure
+;      (evaluate-list operands)))
+;  strict-primitive-procedure?)
+
+;;; Casey's version that makes map work
 (defhandler apply
   (lambda (procedure operands calling-environment)
+    (define (giftwrapped x)
+      (if (compound-procedure? x)
+	  (lambda (#!rest args) (apply x args calling-environment))
+	  x))
     (define (evaluate-list operands)
       (cond ((null? operands) '())
 	    ((null? (rest-operands operands))
-	     (list (eval (first-operand operands)
-			 calling-environment)))
+	     (list (giftwrapped (eval (first-operand operands)
+				      calling-environment))))
 	    (else
-	     (cons (eval (first-operand operands)
-			 calling-environment)
+	     (cons (giftwrapped (eval (first-operand operands)
+				      calling-environment))
 		   (evaluate-list (rest-operands operands))))))
     (apply-primitive-procedure procedure
-      (evaluate-list operands)))
+			       (evaluate-list operands)))
   strict-primitive-procedure?)
 
 (defhandler apply
