@@ -12,7 +12,7 @@
 FUTURE
 * set! - if it sets to a different type, is that "wrong"? Or do we just have set! change the type of the variable?
 
----
+---4/23---
 
 Goal: Put in a function's code, get its type.
 
@@ -29,3 +29,17 @@ Goal: Put in a function's code, get its type.
   cond
   if
   et cetera
+
+* (build-type-cell (f e1 e2) env)
+    (build-type-cell f env) -> cf
+    (build-type-cell e1 env) -> ce1
+    (build-type-cell e2 env) -> ce1
+    (make-cell) -> cout
+    ce1 <= (input-type cf 1)
+    ce2 <= (input-type cf 2)
+    (output-type cf) <= cout
+
+* v      <=    t
+  [3 10]       [3 10]
+  vhi  := min(thi,  vhi)
+  tlow := max(tlow, vlow)
