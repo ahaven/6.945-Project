@@ -186,6 +186,8 @@
   (and (pair? exp)
        (eq? (car exp) 'type-eval)))
 
+(define (type-expr typexp) (cdr typexp))
+
 (define (amb? exp)
   (and (pair? exp) (eq? (car exp) 'amb)))
 

@@ -10,6 +10,7 @@
 (define generic-evaluation-environment
   (extend-top-level-environment user-initial-environment))
 
+(load "typeinterp" generic-evaluation-environment)
 (load "interp" generic-evaluation-environment)
 (load "repl" generic-evaluation-environment)
 
