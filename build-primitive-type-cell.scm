@@ -27,7 +27,7 @@
   (lambda (expr)
     (let ((prev-cell #f)) ; actually get prev-cell from somewhere maybe?
       (if prev-cell
-          prev-cell
+          prev-cell 
           (let ((cell (make-cell)))
             (alter-cell cell)
             cell)))))
