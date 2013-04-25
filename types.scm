@@ -248,3 +248,7 @@
 
 (defhandler type:->symbols (lambda (t) 'any) type:any?)
 (defhandler type:->symbols (lambda (t) 'none) type:none?)
+
+(define-method write-instance
+  ((instance <type>) (port <object>))
+    (pp (type:->symbols instance) port))
