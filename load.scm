@@ -10,12 +10,15 @@
 
 (define generic-evaluation-environment
   (extend-top-level-environment user-initial-environment))
-(load "interpreter/typeinterp" generic-evaluation-environment)
-(load "interpreter/interp" generic-evaluation-environment)
-(load "interpreter/repl" generic-evaluation-environment)
+;;; This section is inserted into the copied part so that we can have an inferencer thing
+(load "type-inferencer" generic-evaluation-environment)
 (load "build-primitive-type-cell" generic-evaluation-environment)
 (load "primitive-def-handlers" generic-evaluation-environment)
+;;; And now we go back to things that are directly copied.
+(load "interpreter/interp" generic-evaluation-environment)
+(load "interpreter/repl" generic-evaluation-environment)
 (ge generic-evaluation-environment)
+;;; And now we're done loading the interpreter.
 
 ; for propagator: (initialize-scheduler)
 ; for interpreter: (init) / (go)
