@@ -147,11 +147,14 @@
           type:none
           (error "Can't intersect non-types")))))
 
+;; note: empty intersection gives none-type rather than empty set
 (defhandler type:binary-intersection
   (lambda (t1 t2)
-    (make-primitive-type
-     (set:intersection (type-symbols t1)
-                       (type-symbols t2))))
+    (let ((intersection (set:intersection (type-symbols t1)
+                                          (type-symbols t2))))
+      (if (null? (set:elements intersection))
+          type:none
+          (make-primitive-type intersection))))
   primitive-type?
   primitive-type?)
 
@@ -251,4 +254,4 @@
 
 (define-method write-instance
   ((instance <type>) (port <object>))
-    (pp (type:->symbols instance) port))
+    (write (type:->symbols instance) port))
