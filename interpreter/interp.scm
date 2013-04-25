@@ -21,14 +21,14 @@
 
 (defhandler eval
   (lambda (expression environment) expression)
-  self-evaluating?)
+  self-evaluating? any?)
 
-(defhandler eval lookup-variable-value variable?)
+(defhandler eval lookup-variable-value variable? any?)
 
 (defhandler eval
   (lambda (expression environment)
     (text-of-quotation expression))
-  quoted?)
+  quoted? any?)
 
 (defhandler eval
   (lambda (expression environment)
@@ -36,35 +36,35 @@
      (lambda-parameters expression)
      (lambda-body expression)
      environment))
-  lambda?)
+  lambda? any?)
 
 (defhandler eval
   (lambda (expression environment)
     (if (eval (if-predicate expression) environment)
 	(eval (if-consequent expression) environment)
 	(eval (if-alternative expression) environment)))
-  if?)
-
+  if? any?)
+
 (defhandler eval
   (lambda (expression environment)
     (eval (cond->if expression) environment))
-  cond?)
+  cond? any?)
 
 (defhandler eval
   (lambda (expression environment)
     (eval (let->combination expression) environment))
-  let?)
+  let? any?)
 
 (defhandler eval
   (lambda (expression environment)
     (evaluate-sequence (begin-actions expression)
 		       environment))
-  begin?)
+  begin? any?)
 
 (defhandler eval
   (lambda (expression environment)
     (build-type-cell (type-expr expression) environment))
-  type-eval?)
+  type-eval? any?)
 
 (define (evaluate-sequence actions environment)
   (cond ((null? actions)
@@ -81,14 +81,14 @@
       (eval (definition-value expression) environment)
       environment)
     (definition-variable expression))
-  definition?)
+  definition? any?)
 
 (defhandler eval
   (lambda (expression environment)
     (set-variable-value! (assignment-variable expression)
       (eval (assignment-value expression) environment)
       environment))
-  assignment?)
+  assignment? any?)
 
 (define apply
   (make-generic-operator 3 'apply default-apply))
@@ -127,7 +127,7 @@
 		   (evaluate-list (rest-operands operands))))))
     (apply-primitive-procedure procedure
 			       (evaluate-list operands)))
-  strict-primitive-procedure?)
+  strict-primitive-procedure? any? any?)
 
 (defhandler apply
   (lambda (procedure operands calling-environment)
@@ -147,7 +147,7 @@
 		  (procedure-parameters procedure))
 	     arguments
 	     (procedure-environment procedure)))))
-  compound-procedure?)
+  compound-procedure? any? any?)
 
 (define evaluate-procedure-operand
   (make-generic-operator 3
