@@ -63,11 +63,8 @@
 
 (defhandler eval
   (lambda (expression environment)
-    (build-type-cell expression environment))
+    (build-type-cell (type-expr expression) environment))
   type-eval?)
-
-(define (build-type-cell exp env)
-  (error "build-type-cell not implemented"))
 
 (define (evaluate-sequence actions environment)
   (cond ((null? actions)
