@@ -1,7 +1,3 @@
-;;; TODO: put me elsewhere
-(define build-type-cell 
-  (make-generic-operator 2 'buid-type-cell))
-
 ;;; TODO: this might not be where the expr is
 (define (primitive-expression? expr)
   (strict-primitive-procedure? expr))

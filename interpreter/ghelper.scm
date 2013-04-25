@@ -143,7 +143,7 @@
 	      (if (not (null? tree))
 		  (warn "Replacing a handler:" tree handler))
 	      (replace! handler))))))
-
+
 #|
 ;;; Demonstration of handler tree structure.
 ;;; Note: symbols were used instead of procedures
