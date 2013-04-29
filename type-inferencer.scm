@@ -8,7 +8,7 @@
 
 (defhandler build-type-cell
   (lambda (expr env)
-    (pp (list 'self-evaluating-build expr))
+    ;(pp (list 'self-evaluating-build expr))
     (cond ((number? expr) (e:constant type:number))
           ((eq? expr #t) (e:constant type:true))
           ((eq? expr #f) (e:constant type:false))
@@ -16,11 +16,25 @@
           (else (error "not known self-evaluating type"))))
   self-evaluating? any?)
 
+;; this needs to be the default, not a separate case.
+;; (defhandler build-type-cell
+;;   (lambda (expr env)
+;;     (pp (list 'application expr))
+;;     (let-cell out
+;;       (let ((opcell (build-type-cell (operator expr) env))
+;;             (argcells (map (lambda (exp) (build-type-cell exp env))
+;;                            (operands expr))))
+;;         ; step 1. divide up function
+;;         ; step 2. ?????
+;;         ; step 3. profit!
+;;         out)))
+;;   application? any?)
+
 ;; Naive version of if, not specializing cases where the predicate
 ;; is always true or always false
 (defhandler build-type-cell
   (lambda (expr env)
-    (pp (list 'if-build expr))
+    ;(pp (list 'if-build expr))
     (let ((predicate (build-type-cell (if-predicate expr) env))
           (consequent (build-type-cell (if-consequent expr) env))
           (alternative (build-type-cell (if-alternative expr) env)))
@@ -36,14 +50,3 @@
     (build-type-cell (cond->if expression) environment))
   cond? any?)
 
-(defhandler build-type-cell
-  (lambda (expr env)
-    (let-cell out
-      (let ((opcell (build-type-cell (operator expr) env))
-            (argcells (map (lambda (exp) (build-type-cell exp env))
-                           (operands expr))))
-        ; step 1. divide up function
-        ; step 2. ?????
-        ; step 3. profit!
-        out)))
-  application? any?)
