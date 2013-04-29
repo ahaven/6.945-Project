@@ -16,3 +16,4 @@
       (if prev-cell
           prev-cell
           (e:constant (cell-value))))))
+
