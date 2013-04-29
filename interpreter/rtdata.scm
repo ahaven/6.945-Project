@@ -51,7 +51,8 @@ http://groups.csail.mit.edu/mac/projects/scheme/documentation/scheme_11.html#SEC
 ;;; An ENVIRONMENT is a chain of FRAMES, made of vectors.
 
 (define (extend-environment variables values types base-environment)
-  (if (fix:= (length variables) (length values) (length types))
+  (if (and (fix:= (length variables) (length values))
+           (fix:= (length variables) (length types)))
       (vector variables values types base-environment)
       (error "Lengths of variable list, value list, and type list do not match" variables values types)))
 
