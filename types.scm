@@ -219,8 +219,8 @@
 ;; The type of booleans is then the set of these two types
 (define type:boolean (type:make 'true 'false))
 (define type:number (type:make 'number))
-(define type:false (type:make 'true))
-(define type:true (type:make 'false))
+(define type:false (type:make 'false))
+(define type:true (type:make 'true))
 (define type:string (type:make 'string))
 (define type:char (type:make 'char))
 (define type:symbol (type:make 'symbol))
