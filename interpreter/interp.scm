@@ -63,7 +63,9 @@
 
 (defhandler eval
   (lambda (expression environment)
-    (build-type-cell (type-expr expression) environment))
+    (pp expression)
+    (let ((cell (build-type-cell (type-expr expression) environment)))
+      (content cell)))
   type-eval? any?)
 
 (define (evaluate-sequence actions environment)

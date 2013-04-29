@@ -82,7 +82,9 @@
    
 (defhandler type:<=
   (lambda (t1 t2)
-    (and (all? (map type:<= (input-types t2) (input-types t1)))
+    (and (= (length (input-types t1))
+            (length (input-types t2)))
+         (all? (map type:<= (input-types t2) (input-types t1)))
          (type:<= (output-type t1) (output-type t2))))
   function-type?
   function-type?)
@@ -116,12 +118,15 @@
 
 (defhandler type:binary-union
   (lambda (t1 t2)
-    (type:function (map type:binary-intersection
-                        (input-types t1)
-                        (input-types t2))
-                   (type:binary-union
-                    (output-type t1)
-                    (output-type t2))))
+    (if (= (length (input-types t1))
+           (length (input-types t2)))
+        (type:function (map type:binary-intersection
+                            (input-types t1)
+                            (input-types t2))
+                       (type:binary-union
+                        (output-type t1)
+                        (output-type t2)))
+        type:any))
   function-type?
   function-type?)
 
@@ -159,13 +164,16 @@
   primitive-type?)
 
 (defhandler type:binary-intersection
-  (lambda (t1 t2)
-    (type:function (map type:binary-union
-                        (input-types t1)
-                        (input-types t2))
-                   (type:binary-intersection
-                    (output-type t1)
-                    (output-type t2))))
+  (lambda (t1 t2)    
+    (if (= (length (input-types t1))
+           (length (input-types t2)))
+        (type:function (map type:binary-union
+                            (input-types t1)
+                            (input-types t2))
+                       (type:binary-intersection
+                        (output-type t1)
+                        (output-type t2)))
+        type:none))
   function-type?
   function-type?)
 
@@ -209,10 +217,10 @@
         (type:make 'bool:f)))
   boolean?)
 ;; The type of booleans is then the set of these two types
-(define type:boolean (type:make 'bool:t 'bool:f))
+(define type:boolean (type:make 'true 'false))
 (define type:number (type:make 'number))
-(define type:false (type:make 'bool:t))
-(define type:true (type:make 'bool:f))
+(define type:false (type:make 'true))
+(define type:true (type:make 'false))
 (define type:string (type:make 'string))
 (define type:char (type:make 'char))
 (define type:symbol (type:make 'symbol))

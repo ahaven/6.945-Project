@@ -18,11 +18,14 @@
   (and (type:= (type:interval-low i1) (type:interval-low i2))
        (type:= (type:interval-high i1) (type:interval-high i2))))
 
+;; Merge two intervals to their common union
 (define (type:interval-merge i1 i2)
   (type:make-interval
    (type:union (type:interval-low i1) (type:interval-low i2))
    (type:intersection (type:interval-high i1) (type:interval-high i2))))
 
+;; Merge two intervals, returning a single type if the union contains
+;; one single type.
 (define (type:interval-merge-simplify i1 i2)
   (let ((merged (type:interval-merge i1 i2)))
     (if (type:= (type:interval-low merged) (type:interval-high merged))
@@ -34,11 +37,12 @@
 
 (define-method write-instance
   ((instance <type-interval>) (port <object>))
-    (write `(type-interval ,(type:->symbols (type:interval-low instance))
-                           ,(type:->symbols (type:interval-high instance)))
+    (write (list 'type-interval
+                 (type:->symbols (type:interval-low instance))
+                 (type:->symbols (type:interval-high instance)))
            port))
 
-;;; Propagators containing types
+;;; Handlers for using type intervals as a partial information structure
 
 (defhandler equivalent? type:interval-equal? type:interval? type:interval?)
 (defhandler merge type:interval-merge-simplify type:interval? type:interval?)
@@ -59,3 +63,36 @@
       the-contradiction))
 (defhandler merge type:in-interval type? type:interval?)
 (defhandler merge (binary-flip type:in-interval) type:interval? type?)
+
+;; Returns a type interval for all types having the given type
+;; or type interval as a lower bound
+(define (type-lower-bound t)
+  (type:make-interval
+   (cond ((type? t) t)
+         ((type-interval? t) (type:interval-low t))
+         (else (error "type-lower-bound of something not a type")))
+   type:any))
+
+;; Returns a type interval for all types having the given type
+;; or type interval as an upper bound
+(define (type-upper-bound t)
+  (type:make-interval
+   type:none
+   (cond ((type? t) t)
+         ((type-interval? t) (type:interval-high t))
+         (else (error "type-upper-bound of something not a type")))))
+
+(propagatify type-lower-bound)
+(propagatify type-upper-bound)
+
+;; Type lower bound constraint
+(define-propagator (c:type<= t1 t2)
+  (p:type-lower-bound t1 t2)
+  (p:type-upper-bound t2 t1))
+
+;; 
+;(define (type-function-output-bound t))
+
+;(define-propagator (c:function-output f out)
+;  (p:
+  
