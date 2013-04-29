@@ -213,8 +213,8 @@
 (defhandler type-of
   (lambda (exp)
     (if exp
-        (type:make 'bool:t)
-        (type:make 'bool:f)))
+        type:true
+        type:false))
   boolean?)
 ;; The type of booleans is then the set of these two types
 (define type:boolean (type:make 'true 'false))
