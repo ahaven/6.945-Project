@@ -73,8 +73,7 @@ def write_def_handlers():
         return """
 (defhandler build-primitive-type-cell
   (get-primitive-cell
-    (lambda (cell)
-      (add-content cell (-> %s %s))))
+    (lambda () (-> %s %s)))
   (eq-primitive? %s))
         """ % (" ".join(inputs), " ".join(outputs), name)
 
