@@ -63,8 +63,9 @@
 
 (defhandler eval
   (lambda (expression environment)
-    (pp expression)
+    (initialize-scheduler)
     (let ((cell (build-type-cell (type-expr expression) environment)))
+      (run)
       (content cell)))
   type-eval? any?)
 
