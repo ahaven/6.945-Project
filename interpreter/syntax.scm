@@ -169,7 +169,6 @@
   (and (pair? exp)
        (not (null? (cdr exp)))))
 
-
 (define (operator app) (car app))
 (define (operands app) (cdr app))
 
