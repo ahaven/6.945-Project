@@ -50,29 +50,39 @@ http://groups.csail.mit.edu/mac/projects/scheme/documentation/scheme_11.html#SEC
 
 ;;; An ENVIRONMENT is a chain of FRAMES, made of vectors.
 
-(define (extend-environment variables values base-environment)
-  (if (fix:= (length variables) (length values))
-      (vector variables values base-environment)
-      (if (fix:< (length variables) (length values))
-	  (error "Too many arguments supplied" variables values)
-	  (error "Too few arguments supplied" variables values))))
+(define (extend-environment variables values types base-environment)
+  (if (fix:= (length variables) (length values) (length types))
+      (vector variables values types base-environment)
+      (error "Lengths of variable list, value list, and type list do not match" variables values types)))
 
 (define (environment-variables env) (vector-ref env 0))
+(define (environment-variables-set! env vars) (vector-set! env 0 vars))
 (define (environment-values env) (vector-ref env 1))
-(define (environment-parent env) (vector-ref env 2))
+(define (environment-values-set! env vals) (vector-set! env 1 vals))
+(define (environment-types env) (vector-ref env 2))
+(define (environment-types-set! env types) (vector-set! env 2 types))
+(define (environment-parent env) (vector-ref env 3))
 
 (define the-empty-environment (list '*the-empty-environment*))
 
-(define (lookup-variable-value var env)
+(define (lookup-var var env should-get-value-as-opposed-to-type)
   (let plp ((env env))
     (if (eq? env the-empty-environment)
-	(lookup-scheme-value var)
+	(if should-get-value-as-opposed-to-type
+	    (lookup-scheme-value var)
+	    (error "can't find in environment to get its type:" var))
 	(let scan
-	    ((vars (vector-ref env 0))
-	     (vals (vector-ref env 1)))
-	  (cond ((null? vars) (plp (vector-ref env 2)))
+	    ((vars (environment-variables env))
+	     (vals (if should-get-value-as-opposed-to-type (environment-values env) (environment-types env))))
+	  (cond ((null? vars) (plp (environment-parent env)))
 		((eq? var (car vars)) (car vals))
 		(else (scan (cdr vars) (cdr vals))))))))
+
+(define (lookup-variable-value var env)
+  (lookup-var var env true))
+
+(define (lookup-variable-type var env)
+  (lookup-var var env false))
 
 ;;; Extension to make underlying Scheme values available to interpreter
 
@@ -83,15 +93,18 @@ http://groups.csail.mit.edu/mac/projects/scheme/documentation/scheme_11.html#SEC
   (if (eq? env the-empty-environment)
       (error "Unbound variable -- DEFINE" var) ;should not happen.
       (let scan
-	  ((vars (vector-ref env 0))
-	   (vals (vector-ref env 1)))
+	  ((vars (environment-variables env))
+	   (vals (environment-values env))
+	   (types (environment-types env)))
 	(cond ((null? vars)
-	       (vector-set! env 0 (cons var (vector-ref env 0)))
-	       (vector-set! env 1 (cons val (vector-ref env 1))))
+	       (environment-variables-set! env (cons var (environment-variables env)))
+	       (environment-values-set! (cons val (environment-values env)))
+	       (environment-types-set! (cons (build-type-cell val env) (environment-types env))))
 	      ((eq? var (car vars))
-	       (set-car! vals val))
+	       (set-car! vals val)
+	       (set-car! types (build-type-cell val env)))
 	      (else
-	       (scan (cdr vars) (cdr vals)))))))
+	       (scan (cdr vars) (cdr vals) (cdr types)))))))
 
 ; >>> This is a pretty dangerous function that allows for forcing the type in order to have primitives in the "global" environment. I don't really want to have O(n^2) time to introduce all of the primitive functions, so this does NOT check that the primitive function has already been defined.
 (define (define-primitive-func! var val type env)
@@ -107,10 +120,11 @@ http://groups.csail.mit.edu/mac/projects/scheme/documentation/scheme_11.html#SEC
     (if (eq? env the-empty-environment)
 	(error "Unbound variable -- SET!" var)
 	(let scan
-	    ((vars (vector-ref env 0))
-	     (vals (vector-ref env 1)))
-	  (cond ((null? vars) (plp (vector-ref env 2)))
-		((eq? var (car vars)) (set-car! vals val))
-		(else (scan (cdr vars) (cdr vals))))))))
+	    ((vars (environment-variables env))
+	     (vals (environment-values env))
+	     (types (environment-types env)))
+	  (cond ((null? vars) (plp (environment-parent env)))
+		((eq? var (car vars)) (set-car! vals val) (set-car! types (build-type-cell val env)))
+		(else (scan (cdr vars) (cdr vals) (cdr types))))))))
 
 
