@@ -19,11 +19,9 @@
   (lambda (p) (eq? primitive p)))
 
 ;;; TODO, may not want to keep creating new cells, but getting old cells instead since we're dealing with constants.
-(define (get-primitive-cell alter-cell)
+(define (get-primitive-cell cell-value) 
   (lambda (expr)
     (let ((prev-cell #f)) ; actually get prev-cell from somewhere maybe?
       (if prev-cell
           prev-cell
-          (let ((cell (make-cell)))
-            (alter-cell cell)
-            cell)))))
+          (e:constant (cell-value))))))
