@@ -149,6 +149,7 @@
 	     (map procedure-parameter-name
 		  (procedure-parameters procedure))
 	     arguments
+	     (map (lambda (arg) (build-type-cell arg)) arguments)
 	     (procedure-environment procedure)))))
   compound-procedure? any? any?)
 

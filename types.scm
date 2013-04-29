@@ -29,7 +29,7 @@
       (error "Can't make a primitive type out of non-symbol" symbols))
   (if (null? symbols)
       type:none
-      (make-primitive-type (apply set:make symbols))))
+      (make-primitive-type (set:insert-list (set:make) symbols))))
 
 ;; Query whether this type is a set of primitive types
 (define (primitive-type? t) (subclass? (object-class t) <primitive-type>))

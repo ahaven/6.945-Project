@@ -127,5 +127,3 @@ http://groups.csail.mit.edu/mac/projects/scheme/documentation/scheme_11.html#SEC
 	  (cond ((null? vars) (plp (environment-parent env)))
 		((eq? var (car vars)) (set-car! vals val) (set-car! types (build-type-cell val env)))
 		(else (scan (cdr vars) (cdr vals) (cdr types))))))))
-
-
