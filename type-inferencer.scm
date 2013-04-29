@@ -49,4 +49,3 @@
   (lambda (expression environment)
     (build-type-cell (cond->if expression) environment))
   cond? any?)
-

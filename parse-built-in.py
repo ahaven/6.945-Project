@@ -26,7 +26,7 @@ def fix_type(token):
         return "type:%s" % token
 
 def parse_line(line, make_output):
-  if line[0] in ['#', '-', '\n']:
+  if line[0] in ['#', '-', '\n'] and not line[0:2] == '- ':
     return None
   line = line.strip().split(" ")
   proc_name, proc_inputs, proc_outputs = None, [], []
@@ -66,16 +66,21 @@ def write_def_handlers():
     lines = read_file()
     output_file = 'primitive-def-handlers.scm'
 
-
     def make_output(name, inputs, outputs):
         # TODO look to see if we have such a cell in a global thing
         # Otherwise create new cell
         return """
+; this here is totally wrong because you should look it up as a func first
+(defhandler build-type-cell
+  (lambda (expr env)
+    (build-primitive-type-cell expr))
+  (eq-primitive? '%s) any?)
+
 (defhandler build-primitive-type-cell
   (get-primitive-cell
     (lambda () (-> %s %s)))
-  (eq-primitive? %s))
-        """ % (" ".join(inputs), " ".join(outputs), name)
+  (eq-primitive? '%s)) 
+        """ % (name, " ".join(inputs), " ".join(outputs), name)
 
     parse_all(lines, output_file, make_output)
 
