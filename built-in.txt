@@ -168,7 +168,7 @@ string-hash-mod string number -> number
 string-capitalized?     string -> boolean
 substring-capitalized?  string non-neg-integer non-neg-integer -> boolean
 string-upper-case?      string -> boolean
-substring-upper-case?   string non-neg-integer non-neg-integer -> boolea
+substring-upper-case?   string non-neg-integer non-neg-integer -> boolean
 string-lower-case?      string -> boolean
 substring-lower-case?   string non-neg-integer non-neg-integer -> boolean
 string-capitalize       string -> string
@@ -187,9 +187,9 @@ substring               string non-neg-integer non-neg-integer -> string
 string-head             string non-neg-integer -> string
 string-tail             string non-neg-integer -> string
 string-pad-left         string non-neg-integer [char] -> string
-string-trim             string [char-set] -> string
-string-trim-left        string [char-set] -> string
-string-trim-right       string [char-set] -> string
+-string-trim             string [char-set] -> string
+-string-trim-left        string [char-set] -> string
+-string-trim-right       string [char-set] -> string
 
 # http://web.mit.edu/scheme_v9.0.1/doc/mit-scheme-ref/Searching-Strings.html#Searching-Strings
 string-search-forward     string string -> non-neg-integer | #f
@@ -203,14 +203,14 @@ string-find-next-char     string char -> non-neg-integer | #f
 substring-find-next-char  string non-neg-integer non-neg-integer char -> non-neg-integer | #f
 string-find-next-char-ci      string char -> non-neg-integer | #f
 substring-find-next-char-ci   string non-neg-integer non-neg-integer char -> non-neg-integer | #f
-string-find-next-char-in-set      string char-set -> non-neg-integer | #f
-substring-find-next-char-in-set   string non-neg-integer non-neg-integer char-set -> non-neg-integer | #f
+-string-find-next-char-in-set      string char-set -> non-neg-integer | #f
+-substring-find-next-char-in-set   string non-neg-integer non-neg-integer char-set -> non-neg-integer | #f
 string-find-previous-char     string char -> non-neg-integer | #f
 substring-find-previous-char  string non-neg-integer non-neg-integer char -> non-neg-integer | #f
 string-find-previous-char-ci      string char -> non-neg-integer | #f
 substring-find-previous-char-ci   string non-neg-integer non-neg-integer char -> non-neg-integer | #f
-string-find-previous-char-in-set      string char-set -> non-neg-integer | #f
-substring-find-previous-char-in-set   string non-neg-integer non-neg-integer char-set -> non-neg-integer | #f
+-string-find-previous-char-in-set      string char-set -> non-neg-integer | #f
+-substring-find-previous-char-in-set   string non-neg-integer non-neg-integer char-set -> non-neg-integer | #f
 
 # http://web.mit.edu/scheme_v9.0.1/doc/mit-scheme-ref/Searching-Strings.html#Searching-Strings
 string-match-forward        string string -> non-neg-integer

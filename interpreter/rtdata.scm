@@ -93,6 +93,15 @@ http://groups.csail.mit.edu/mac/projects/scheme/documentation/scheme_11.html#SEC
 	      (else
 	       (scan (cdr vars) (cdr vals)))))))
 
+; >>> This is a pretty dangerous function that allows for forcing the type in order to have primitives in the "global" environment. I don't really want to have O(n^2) time to introduce all of the primitive functions, so this does NOT check that the primitive function has already been defined.
+(define (define-primitive-func! var val type env)
+  (if (eq? env the-empty-environment)
+      (error "Unbound variable -- DEFINE" var) ;should not happen.
+      (begin
+	(vector-set! env 0 (cons var (vector-ref env 0)))
+	(vector-set! env 1 (cons val (vector-ref env 1)))
+	(vector-set! env 2 (cons type (vector-ref env 2))))))
+
 (define (set-variable-value! var val env)
   (let plp ((env env))
     (if (eq? env the-empty-environment)

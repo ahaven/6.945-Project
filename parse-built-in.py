@@ -9,7 +9,7 @@ def default_proc_output(name, inputs, outputs):
                            ",".join(inputs),
                            ",".join(outputs))
     
-numerical_subtypes = ['rational', 'non-neg-integer', 'integer', 'pos-integer', 'radix'] # radix is a bit of a hack
+numerical_subtypes = ['rational', 'non-neg-integer', 'integer', 'pos-integer', 'radix', 'digit'] # radix is a bit of a hack as is digit
 def fix_type(token):
     global numerical_subtypes
     if len(token) > 5 and token[0:5] == 'type:':
@@ -53,14 +53,24 @@ def parse_line(line, make_output):
 
 def parse_all(lines, 
               output_file='built-in-output.txt', 
-              make_output = default_proc_output):
+              make_output = default_proc_output,
+              beginning=None, ending=None):
   with open(output_file, "w") as f:
+    # write the beginning of the file
+    if beginning:
+      f.write(beginning())
+
+    # write all the lines in the middle
     for line in lines:
       if line == '--- end ---\n':
         break
       parsed = parse_line(line, make_output)
       if parsed:
         f.write(parsed)
+    
+    # write the ending of the file
+    if ending:
+      f.write(ending())
 
 def write_def_handlers():
     lines = read_file()
@@ -84,4 +94,25 @@ def write_def_handlers():
 
     parse_all(lines, output_file, make_output)
 
-write_def_handlers()
+def init_primitives():
+    lines = read_file()
+    output_file = 'init-primitives.scm'
+
+    def beginning():
+      return "(define (init-primitives env)"
+
+    def make_output(name, inputs, outputs):
+        # TODO look to see if we have such a cell in a global thing
+        # Otherwise create new cell
+        return """\n
+  (define-primitive-func! '%s %s 
+    (e:constant (-> %s %s))
+    env)""" % \
+        (name, name, " ".join(inputs), " ".join(outputs))
+
+    def ending():
+      return ")"
+
+    parse_all(lines, output_file, make_output, beginning, ending)
+
+init_primitives()

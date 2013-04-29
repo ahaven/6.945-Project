@@ -40,7 +40,8 @@
 
 (define (init)
   (set! the-global-environment
-	(extend-environment '() '() the-empty-environment))
+	(extend-environment '() '() '() the-empty-environment))
+  (init-primitives the-global-environment)
   (repl))
 
 (define (repl)
