@@ -90,6 +90,14 @@
   (p:type-lower-bound t1 t2)
   (p:type-upper-bound t2 t1))
 
+(propagatify type:binary-union)
+(propagatify type:binary-intersection)
+
+(define-propagator (c:type-union t1 t2 out)
+  (p:type:binary-union t1 t2 out)
+  (p:type-upper-bound out t1)
+  (p:type-upper-bound out t2))
+
 ;; 
 ;(define (type-function-output-bound t))
 
