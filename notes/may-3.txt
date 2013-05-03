@@ -29,3 +29,4 @@ PROMISES MAY BE THE ANSWER TO EVERYTHING
 Think about
 - promises maybe
 - apply
+- how does type-eval even turn a *the-nothing* into something useful?
