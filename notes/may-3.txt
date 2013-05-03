@@ -1,3 +1,7 @@
+* Pull the lambda for defhandler eval ... lambda? out.
+  * It will need to be referenced for both eval and when defining compound functions in type-eval. 
+
+
 ]=> (define a (lambda (b c) (+ b c))) 
   This will do:
     (eval (lambda (b c) (+ b c))) -> compound-procedure
