@@ -1,12 +1,12 @@
-* set implementation, type-totally:< - caseymc
+[done] * set implementation, type-totally:< - caseymc
   (set:make symbol? symbol? ...) --> set
   (set:add set? symbol? ...) --> set
-* type data type - ahaven
+[done] * type data type - ahaven
   (type:make symbol? ...) --> type
   (type:make (type?) type?) --> type
   (type:union type? ...) --> type
 * type:<
-* built in's types - katfang
+[done] * built in's types - katfang
 
 
 FUTURE
@@ -43,3 +43,43 @@ Goal: Put in a function's code, get its type.
   [3 10]       [3 10]
   vhi  := min(thi,  vhi)
   tlow := max(tlow, vlow)
+
+---5/3---
+1) Figure out what we need.
+  - 12 minute presentation
+  - some sort of report ??????????? 
+2) Finish implementation
+  - Show that we can do fib / factorial
+  - Define a variable; apply a function on the variable.
+  - Special Forms that we have
+    - if / cond
+  - When define a function
+    - build/hookup a cell in environment
+  - (type-eval variable)
+    - just a read / run propagator
+  - NOW
+    * handler for lambda
+      - glue together cells for variables inside the lambda and return of lambda with type of function
+    * handler for apply
+      - glue together inputs to function with function and get the cell that is the result of the function application
+    * look up cells for type-eval [put in var env; get type]
+    * putting things into environment 
+      - define
+    * TEST AND CREATE DEMO
+  - FUTURE
+    - Do list type
+      - Show that map works
+    - set!
+3) Make presenation
+  - Introduction
+  - Demo at beginning 
+  - Our type implementation / lattice
+  - Modifications to enviroment
+    - Adding types to environments [to be later explained]
+    - calling type-eval
+  - Cells
+    - How cells are hooked together 
+    - What a cell looks like
+    - Interval
+  - Demo at end
+4) Make report: Probably looks the same as presentation hopefully plus some more stuff.
