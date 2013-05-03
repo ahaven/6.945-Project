@@ -1,0 +1,26 @@
+]=> (define a (lambda (b c) (+ b c))) 
+  This will do:
+    (eval (lambda (b c) (+ b c))) -> compound-procedure
+    (type-eval the thing that popped out of the above eval)
+      This actually sees that it's a compound-procedure and spits out [*the-nothing*]
+    Ties it together to 'a in the environment
+
+* type-eval will need to actually look at the compound procedure and build out the cell if it finds *the-nothing*
+  - except for this probably happens in some function called (get-var-type var env)
+
+
+
+# This on here is kind of a hack which has to do if we do something like
+  (type-eval (lambda (b c) (+ b c)))
+]=> (type-eval ...)
+  - creates new environment
+  - points 'answer -> ...
+  - returns type of 'answer
+  - we do this because just calling build-type-cell on the lambda will return *the-nothing*
+
+# This one here is unsolved
+(type-eval ((lambda (a) (+ 3 a)) 4))
+  - As far as we can tell, will get a compound-procedure and *the-nothing* and now we need to apply it.
+
+
+PROMISES MAY BE THE ANSWER TO EVERYTHING
