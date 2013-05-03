@@ -64,7 +64,9 @@ Goal: Put in a function's code, get its type.
       - glue together inputs to function with function and get the cell that is the result of the function application
     * look up cells for type-eval [put in var env; get type]
     * putting things into environment 
-      - define
+      - define [needs to be modified to build-type-cell]
+    * fix begin for build-type-cell; in particular, might have side-effects like defines (and later set!)
+    * move (initialize-schedule) from interpreter/interp.scm to somewhere sensable so that we don't wipe old cells. However, we may need to wipe some cells.
     * TEST AND CREATE DEMO
   - FUTURE
     - Do list type
