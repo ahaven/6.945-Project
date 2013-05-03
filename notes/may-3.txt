@@ -24,3 +24,8 @@
 
 
 PROMISES MAY BE THE ANSWER TO EVERYTHING
+
+
+Think about
+- promises maybe
+- apply
