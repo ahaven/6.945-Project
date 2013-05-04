@@ -100,10 +100,10 @@ http://groups.csail.mit.edu/mac/projects/scheme/documentation/scheme_11.html#SEC
 	(cond ((null? vars)
 	       (environment-variables-set! env (cons var (environment-variables env)))
 	       (environment-values-set! (cons val (environment-values env)))
-	       (environment-types-set! (cons (build-type-cell val env) (environment-types env))))
+	       (environment-types-set! (cons (type-eval val env) (environment-types env))))
 	      ((eq? var (car vars))
 	       (set-car! vals val)
-	       (set-car! types (build-type-cell val env)))
+	       (set-car! types (type-eval val env)))
 	      (else
 	       (scan (cdr vars) (cdr vals) (cdr types)))))))
 
@@ -125,5 +125,5 @@ http://groups.csail.mit.edu/mac/projects/scheme/documentation/scheme_11.html#SEC
 	     (vals (environment-values env))
 	     (types (environment-types env)))
 	  (cond ((null? vars) (plp (environment-parent env)))
-		((eq? var (car vars)) (set-car! vals val) (set-car! types (build-type-cell val env)))
+		((eq? var (car vars)) (set-car! vals val) (set-car! types (type-eval val env)))
 		(else (scan (cdr vars) (cdr vals) (cdr types))))))))

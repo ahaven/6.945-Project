@@ -1,12 +1,12 @@
 ;;; Type evaluator/inferencer
 
-(define build-type-cell
+(define type-eval
   (make-generic-operator
-   2 'build-type-cell
+   2 'type-eval
    (lambda (expression environment)
-     (error "build-type-cell not implemented" expression))))
+     (error "type-eval not implemented" expression))))
 
-(defhandler build-type-cell
+(defhandler type-eval
   (lambda (expr env)
     ;(pp (list 'self-evaluating-build expr))
     (cond ((number? expr) (e:constant type:number))
@@ -16,33 +16,33 @@
           (else (error "not known self-evaluating type"))))
   self-evaluating? any?)
 
-(defhandler build-type-cell
+(defhandler type-eval
   (lambda (expr env) type:symbol)
   quoted? any?)
 
-(define (build-type-cell-sequence expr env)
+(define (type-eval-sequence expr env)
   (cond ((no-more-exps? expr) (e:constant (type:none)))
-        ((last-exp? expr) (build-type-cell (first-exp expr) env))
+        ((last-exp? expr) (type-eval (first-exp expr) env))
         (else ; TODO: consider environment changes (from, e.g., set! and define)
-         (build-type-cell-sequence (rest-exps expr) env))))
+         (type-eval-sequence (rest-exps expr) env))))
 
-(defhandler build-type-cell
+(defhandler type-eval
   (lambda (expr env)
-    (build-type-cell-sequence (begin-actions expr) env))
+    (type-eval-sequence (begin-actions expr) env))
   begin? any?)
 
-(defhandler build-type-cell
+(defhandler type-eval
   (lambda (expr env)
-    (build-type-cell (let->combination expr) env))
+    (type-eval (let->combination expr) env))
   let? any?)
 
 ;; this needs to be the default, not a separate case.
-;; (defhandler build-type-cell
+;; (defhandler type-eval
 ;;   (lambda (expr env)
 ;;     (pp (list 'application expr))
 ;;     (let-cell out
-;;       (let ((opcell (build-type-cell (operator expr) env))
-;;             (argcells (map (lambda (exp) (build-type-cell exp env))
+;;       (let ((opcell (type-eval (operator expr) env))
+;;             (argcells (map (lambda (exp) (type-eval exp env))
 ;;                            (operands expr))))
 ;;         ; step 1. divide up function
 ;;         ; step 2. ?????
@@ -52,17 +52,17 @@
 
 ;; Naive version of if, not specializing cases where the predicate
 ;; is always true or always false
-(defhandler build-type-cell
+(defhandler type-eval
   (lambda (expr env)
     ;(pp (list 'if-build expr))
-    (let ((predicate (build-type-cell (if-predicate expr) env))
-          (consequent (build-type-cell (if-consequent expr) env))
-          (alternative (build-type-cell (if-alternative expr) env)))
+    (let ((predicate (type-eval (if-predicate expr) env))
+          (consequent (type-eval (if-consequent expr) env))
+          (alternative (type-eval (if-alternative expr) env)))
       (c:type<= predicate (e:constant type:boolean))
       (ce:type-union consequent alternative)))
   if? any?)
 
-(defhandler build-type-cell
+(defhandler type-eval
   (lambda (expression environment)
-    (build-type-cell (cond->if expression) environment))
+    (type-eval (cond->if expression) environment))
   cond? any?)

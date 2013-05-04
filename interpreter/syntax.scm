@@ -181,9 +181,9 @@
 
 ;;; Another special form that will be needed later.
 
-(define (type-eval? exp)
+(define (type-extract? exp)
   (and (pair? exp)
-       (eq? (car exp) 'type-eval)))
+       (eq? (car exp) 'type-extract)))
 
 (define (type-expr typexp) (cadr typexp))
 

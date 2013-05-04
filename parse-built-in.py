@@ -81,7 +81,7 @@ def write_def_handlers():
         # Otherwise create new cell
         return """
 ; this here is totally wrong because you should look it up as a func first
-(defhandler build-type-cell
+(defhandler type-eval
   (lambda (expr env)
     (build-primitive-type-cell expr))
   (eq-primitive? '%s) any?)

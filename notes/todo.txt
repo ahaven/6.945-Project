@@ -17,23 +17,23 @@ FUTURE
 Goal: Put in a function's code, get its type.
 
 * Make a version of the evaluator that analyzes type
-  ** Make type-eval so that this is possible; use propagators somehow
+  ** Make type-extract so that this is possible; use propagators somehow
 * Decide how to "save" known typed things - put them in the environment 
   that stores all the other types?
      name -> {code} [+ {type info = cell} ]
 
 * So how do propagators give us an answer?
-  build-type-cell expr env -> cell
+  type-eval expr env -> cell
   primitive-application
   application
   cond
   if
   et cetera
 
-* (build-type-cell (f e1 e2) env)
-    (build-type-cell f env) -> cf
-    (build-type-cell e1 env) -> ce1
-    (build-type-cell e2 env) -> ce1
+* (type-eval (f e1 e2) env)
+    (type-eval f env) -> cf
+    (type-eval e1 env) -> ce1
+    (type-eval e2 env) -> ce1
     (make-cell) -> cout
     ce1 <= (input-type cf 1)
     ce2 <= (input-type cf 2)
@@ -55,17 +55,17 @@ Goal: Put in a function's code, get its type.
     - if / cond
   - When define a function
     - build/hookup a cell in environment
-  - (type-eval variable)
+  - (type-extract variable)
     - just a read / run propagator
   - NOW
     * handler for lambda
       - glue together cells for variables inside the lambda and return of lambda with type of function
     * handler for apply
       - glue together inputs to function with function and get the cell that is the result of the function application
-    * look up cells for type-eval [put in var env; get type]
+    * look up cells for type-extract [put in var env; get type]
     * putting things into environment 
-      - define [needs to be modified to build-type-cell]
-    * fix begin for build-type-cell; in particular, might have side-effects like defines (and later set!)
+      - define [needs to be modified to type-eval]
+    * fix begin for type-eval; in particular, might have side-effects like defines (and later set!)
     * move (initialize-schedule) from interpreter/interp.scm to somewhere sensable so that we don't wipe old cells. However, we may need to wipe some cells.
     * TEST AND CREATE DEMO
   - FUTURE
@@ -78,7 +78,7 @@ Goal: Put in a function's code, get its type.
   - Our type implementation / lattice
   - Modifications to enviroment
     - Adding types to environments [to be later explained]
-    - calling type-eval
+    - calling type-extract
   - Cells
     - How cells are hooked together 
     - What a cell looks like

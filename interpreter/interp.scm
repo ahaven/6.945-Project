@@ -64,10 +64,10 @@
 (defhandler eval
   (lambda (expression environment)
     (initialize-scheduler)
-    (let ((cell (build-type-cell (type-expr expression) environment)))
+    (let ((cell (type-eval (type-expr expression) environment)))
       (run)
       (content cell)))
-  type-eval? any?)
+  type-extract? any?)
 
 (define (evaluate-sequence actions environment)
   (cond ((null? actions)
@@ -149,7 +149,7 @@
 	     (map procedure-parameter-name
 		  (procedure-parameters procedure))
 	     arguments
-	     (map (lambda (arg) (build-type-cell arg)) arguments)
+	     (map (lambda (arg) (type-eval arg)) arguments)
 	     (procedure-environment procedure)))))
   compound-procedure? any? any?)
 
