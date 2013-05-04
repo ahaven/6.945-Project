@@ -1,10 +1,18 @@
 ;;; Type evaluator/inferencer
 
+(define (default-type-eval expression environment)
+  (cond ((application? expression)
+         (type-apply (type-eval (operator expression) environment)
+                     (operands expression)
+                     environment))
+        (else
+          (error "Unknown expression type" expression))))
+
+(define (default-apply procedure operands calling-environment)
+  (error "Unknown procedure type" procedure))
+
 (define type-eval
-  (make-generic-operator
-   2 'type-eval
-   (lambda (expression environment)
-     (error "type-eval not implemented" expression))))
+  (make-generic-operator 2 'type-eval default-type-eval))
 
 (defhandler type-eval
   (lambda (expr env)

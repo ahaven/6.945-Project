@@ -39,6 +39,7 @@
 (define the-global-environment 'not-initialized)
 
 (define (init)
+  (initialize-scheduler) ; for propagators
   (set! the-global-environment
 	(extend-environment '() '() '() the-empty-environment))
   (init-primitives the-global-environment)
