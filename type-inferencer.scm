@@ -27,6 +27,11 @@
 (defhandler type-eval
   (lambda (expr env) type:symbol)
   quoted? any?)
+ 
+(defhandler type-eval
+	(lambda (expr env)
+		(lookup-variable-type expr env))
+	symbol? any?)
 
 (define (type-eval-sequence expr env)
   (cond ((no-more-exps? expr) (e:constant (type:none)))

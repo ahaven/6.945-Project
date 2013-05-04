@@ -99,15 +99,18 @@ http://groups.csail.mit.edu/mac/projects/scheme/documentation/scheme_11.html#SEC
 	   (types (environment-types env)))
 	(cond ((null? vars)
 	       (environment-variables-set! env (cons var (environment-variables env)))
-	       (environment-values-set! (cons val (environment-values env)))
-	       (environment-types-set! (cons (type-eval val env) (environment-types env))))
+	       (environment-values-set! env (cons val (environment-values env)))
+	       (environment-types-set! env (cons (type-eval val env) (environment-types env))))
 	      ((eq? var (car vars))
 	       (set-car! vals val)
 	       (set-car! types (type-eval val env)))
 	      (else
 	       (scan (cdr vars) (cdr vals) (cdr types)))))))
 
-; >>> This is a pretty dangerous function that allows for forcing the type in order to have primitives in the "global" environment. I don't really want to have O(n^2) time to introduce all of the primitive functions, so this does NOT check that the primitive function has already been defined.
+; >>> This is a pretty dangerous function that allows for forcing the type in order 
+; to have primitives in the "global" environment. I don't really want to have O(n^2) 
+; time to introduce all of the primitive functions, so this does NOT check that the 
+; primitive function has already been defined.
 (define (define-primitive-func! var val type env)
   (if (eq? env the-empty-environment)
       (error "Unbound variable -- DEFINE" var) ;should not happen.
