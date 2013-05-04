@@ -7,11 +7,11 @@
 
 (define (default-eval expression environment)
   (cond ((application? expression)
-	 (apply (eval (operator expression) environment)
-		(operands expression)
-		environment))
-	(else
-	 (error "Unknown expression type" expression))))
+         (apply (eval (operator expression) environment)
+                (operands expression)
+                environment))
+        (else
+         (error "Unknown expression type" expression))))
 
 (define (default-apply procedure operands calling-environment)
   (error "Unknown procedure type" procedure))
@@ -41,8 +41,8 @@
 (defhandler eval
   (lambda (expression environment)
     (if (eval (if-predicate expression) environment)
-	(eval (if-consequent expression) environment)
-	(eval (if-alternative expression) environment)))
+        (eval (if-consequent expression) environment)
+        (eval (if-alternative expression) environment)))
   if? any?)
 
 (defhandler eval
@@ -58,7 +58,7 @@
 (defhandler eval
   (lambda (expression environment)
     (evaluate-sequence (begin-actions expression)
-		       environment))
+                       environment))
   begin? any?)
 
 (defhandler eval
@@ -70,12 +70,12 @@
 
 (define (evaluate-sequence actions environment)
   (cond ((null? actions)
-	 (error "Empty sequence"))
-	((null? (rest-exps actions))
-	 (eval (first-exp actions) environment))
-	(else
-	 (eval (first-exp actions) environment)
-	 (evaluate-sequence (rest-exps actions) environment))))
+         (error "Empty sequence"))
+        ((null? (rest-exps actions))
+         (eval (first-exp actions) environment))
+        (else
+         (eval (first-exp actions) environment)
+         (evaluate-sequence (rest-exps actions) environment))))
 
 (defhandler eval
   (lambda (expression environment)
@@ -100,13 +100,13 @@
 ;  (lambda (procedure operands calling-environment)
 ;    (define (evaluate-list operands)
 ;      (cond ((null? operands) '())
-;	    ((null? (rest-operands operands))
-;	     (list (eval (first-operand operands)
-;			 calling-environment)))
-;	    (else
-;	     (cons (eval (first-operand operands)
-;			 calling-environment)
-;		   (evaluate-list (rest-operands operands))))))
+;           ((null? (rest-operands operands))
+;            (list (eval (first-operand operands)
+;                        calling-environment)))
+;           (else
+;            (cons (eval (first-operand operands)
+;                        calling-environment)
+;                  (evaluate-list (rest-operands operands))))))
 ;    (apply-primitive-procedure procedure
 ;      (evaluate-list operands)))
 ;  strict-primitive-procedure?)
@@ -116,47 +116,47 @@
   (lambda (procedure operands calling-environment)
     (define (giftwrapped x)
       (if (compound-procedure? x)
-	  (lambda (#!rest args) (apply x args calling-environment))
-	  x))
+          (lambda (#!rest args) (apply x args calling-environment))
+          x))
     (define (evaluate-list operands)
       (cond ((null? operands) '())
-	    ((null? (rest-operands operands))
-	     (list (giftwrapped (eval (first-operand operands)
-				      calling-environment))))
-	    (else
-	     (cons (giftwrapped (eval (first-operand operands)
-				      calling-environment))
-		   (evaluate-list (rest-operands operands))))))
+            ((null? (rest-operands operands))
+             (list (giftwrapped (eval (first-operand operands)
+                                      calling-environment))))
+            (else
+             (cons (giftwrapped (eval (first-operand operands)
+                                      calling-environment))
+                   (evaluate-list (rest-operands operands))))))
     (apply-primitive-procedure procedure
-			       (evaluate-list operands)))
+                               (evaluate-list operands)))
   strict-primitive-procedure? any? any?)
 
 (defhandler apply
   (lambda (procedure operands calling-environment)
     (if (not (= (length (procedure-parameters procedure))
-		(length operands)))
-	(error "Wrong number of operands supplied"))
+                (length operands)))
+        (error "Wrong number of operands supplied"))
     (let ((arguments
-	   (map (lambda (parameter operand)
-		  (evaluate-procedure-operand parameter
-					      operand
-					      calling-environment))
-		(procedure-parameters procedure)
-		operands)))
+           (map (lambda (parameter operand)
+                  (evaluate-procedure-operand parameter
+                                              operand
+                                              calling-environment))
+                (procedure-parameters procedure)
+                operands)))
       (eval (procedure-body procedure)
-	    (extend-environment
-	     (map procedure-parameter-name
-		  (procedure-parameters procedure))
-	     arguments
-	     (map (lambda (arg) (type-eval arg)) arguments)
-	     (procedure-environment procedure)))))
+            (extend-environment
+             (map procedure-parameter-name
+                  (procedure-parameters procedure))
+             arguments
+             (map (lambda (arg) (type-eval arg)) arguments)
+             (procedure-environment procedure)))))
   compound-procedure? any? any?)
 
 (define evaluate-procedure-operand
   (make-generic-operator 3
-			 'evaluate-operand
-			 (lambda (parameter operand environment)
-			   (eval operand environment))))
+                         'evaluate-operand
+                         (lambda (parameter operand environment)
+                           (eval operand environment))))
 
 (define procedure-parameter-name
   (make-generic-operator 1 'parameter-name (lambda (x) x)))
