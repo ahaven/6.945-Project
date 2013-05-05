@@ -153,10 +153,12 @@
                 operands)))
       (eval (procedure-body procedure)
             (extend-environment
-             (map procedure-parameter-name
-                  (procedure-parameters procedure))
-             arguments
-             (map (lambda (arg) (type-eval arg)) arguments)
+              (map procedure-parameter-name
+                   (procedure-parameters procedure))
+              arguments
+              (map (lambda (arg) 
+                     (type-eval arg calling-environment))
+                   arguments)
              (procedure-environment procedure)))))
   compound-procedure? any? any?)
 
