@@ -101,7 +101,7 @@
                     (map vars (lambda (var) '()))
                     var-cells
                     env)))
-      (p:cons (e:constant var-cells) ; inputs
+      (p:cons (e:constant-list var-cells) ; inputs
               (type-eval-sequence bproc newenv) ; output
               output-cell))
     output-cell))
@@ -117,7 +117,7 @@
 ; this assumes that the procedure is in cell-form
 (define (type-apply-cell procedure operands calling-environment)
   ;; todo test for procedure parameter length vs operands length
-  (let-cell ((arguments (e:constant
+  (let-cell ((arguments (e:constant-list
                           (map (lambda (operand)
                                  (type-eval operand
                                             calling-environment))

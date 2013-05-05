@@ -107,10 +107,10 @@ def init_primitives():
         return """\n
   (define-primitive-func! '%s %s 
     (e:cons 
-      (e:constant (list (e:constant %s)))
+      (e:constant-list (list %s))
       (e:constant (type:union %s)))
     env)""" % \
-        (name, name, ") (e:constant ".join(inputs), " ".join(outputs))
+        (name, name, " ".join(inputs), " ".join(outputs))
 
     def ending():
       return ")"

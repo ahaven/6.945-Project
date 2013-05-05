@@ -114,6 +114,15 @@
     (c:type<= (e:car t1) (e:car t2))
     (c:for-each-type<= (e:cdr t1) (e:cdr t2))))
 
+(define (e:constant-list l)
+  (if (null? l)
+      (e:constant '())
+      (e:cons (let ((val (car l)))
+                (if (cell? val)
+                    val
+                    (e:constant (car l))))
+              (e:constant-list (cdr l)))))
+
 (define (type-lower-bound-of t)
   (cond ((type? t) t)
         ((type-interval? t) (type:interval-low t))
