@@ -100,7 +100,6 @@ http://groups.csail.mit.edu/mac/projects/scheme/documentation/scheme_11.html#SEC
 	   (vals (environment-values env))
 	   (types (environment-types env)))
 	(cond ((null? vars)
-         (write (compound-procedure? val))
 	       (environment-variables-set! env (cons var (environment-variables env)))
 	       (environment-values-set!    env (cons (if defining-value-as-opposed-to-type val the-unknown-value)   (environment-values env)))
 	       (environment-types-set!     env (cons (if defining-value-as-opposed-to-type (type-eval val env) val) (environment-types env))))

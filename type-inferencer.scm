@@ -84,7 +84,7 @@
 (defhandler type-eval
   (lambda (expression environment)
     (new-unbuilt-procedure expression))
-  compound-procedure? any?)
+  (lambda (x) (compound-procedure? x)) any?)
 
 ; that were defined
 (define (type-eval-procedure f)
