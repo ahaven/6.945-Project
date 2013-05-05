@@ -5,5 +5,5 @@
 
 (define (unbuilt-procedure? proc)
   (and (vector? proc)
-       (= (vector-ref proc 0))
-       (= (vector-length proc) 3)))
+       (= (vector-length proc) 3)
+       (eq? (vector-ref proc 0) 'unbuilt-procedure)))
