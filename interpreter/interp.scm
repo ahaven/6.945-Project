@@ -62,7 +62,7 @@
   begin? any?)
 
 (define (procedure-cell->type cell)
-  (type:function (content (car cell)) (content (cdr cell))))
+  (type:function (map content (content (car cell))) (content (cdr cell))))
 
 (defhandler eval
   (lambda (expression environment)
