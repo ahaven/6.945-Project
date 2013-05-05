@@ -64,6 +64,38 @@
     (type-eval (cond->if expression) environment))
   cond? any?)
 
+(defhandler type-eval
+  (lambda (expression environment)
+    (type-eval (make-compound-procedure
+                (lambda-parameters expression)
+                (lambda-body expression)
+                environment) ; extended with this lambda maybe?
+               environment))
+  lambda? any?)
+
+(defhandler type-eval
+  (lambda (expression environment)
+    (new-function-cell expression environment))
+  compound-expression? any?)
+
+(define (type-eval-procedure f)
+  (let ((output-cell (procedure-cell f))
+        (proc (procedure-proc f)))
+    ; TODO: switch on whether this type has already been calculated
+    ; as is, we just duplicate the constraints if we call this again
+    (let* ((vars (procedure-parameters proc))
+           (bproc (procedure-body proc))
+           (env (procedure-environment proc))
+           (var-cells (map vars (lambda (var) (make-cell))))
+           (newenv (extend-environment
+                    vars
+                    (map vars (lambda (var) '()))
+                    var-cells
+                    env)))
+      (p:cons (e:constant var-cells) ; inputs
+              (type-eval-sequence bproc newenv) ; output
+              output-cell))))
+
 ;;;---------------- Apply ----------------
 
 (define (default-type-apply procedure operands calling-environment)
