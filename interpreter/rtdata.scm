@@ -102,7 +102,7 @@ http://groups.csail.mit.edu/mac/projects/scheme/documentation/scheme_11.html#SEC
 	(cond ((null? vars)
 	       (environment-variables-set! env (cons var (environment-variables env)))
 	       (environment-values-set!    env (cons (if defining-value-as-opposed-to-type val the-unknown-value)   (environment-values env)))
-	       (environment-types-set!     env (cons (if defining-value-as-opposed-to-type (new-unbuilt-procedure val) val) (environment-types env))))
+	       (environment-types-set!     env (cons (if defining-value-as-opposed-to-type (type-eval val env) val) (environment-types env))))
 	      ((eq? var (car vars))
 	       (set-car! vals  (if defining-value-as-opposed-to-type val the-unknown-value))
 	       (set-car! types (if defining-value-as-opposed-to-type (type-eval val env) val)))

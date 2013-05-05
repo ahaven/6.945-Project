@@ -81,6 +81,11 @@
                environment))
   lambda? any?)
 
+(defhandler type-eval
+  (lambda (expression environment)
+    (new-unbuilt-procedure expression))
+  (lambda (x) (compound-procedure? x)) any?)
+
 ; that were defined
 (define (type-eval-procedure f)
   (let ((output-cell (procedure-cell f))
