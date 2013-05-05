@@ -83,13 +83,13 @@
 
 (defhandler type-eval
   (lambda (expression environment)
-    (new-procedure-cell expression))
+    (new-unbuilt-procedure expression))
   compound-procedure? any?)
 
 ; that were defined
 (define (type-eval-procedure f)
-  (let ((output-cell (get-procedure-cell f))
-        (proc (get-procedure-proc f)))
+  (let ((output-cell (procedure-cell f))
+        (proc (procedure-proc f)))
     ; TODO: switch on whether this type has already been calculated
     ; as is, we just duplicate the constraints if we call this again
     (let* ((vars (procedure-parameters proc))
@@ -127,23 +127,22 @@
                 (e:car procedure)))
   (e:cdr procedure))
 
-; primitive procedures 
 (defhandler type-apply
   type-apply-cell
   cell? any? any?)
 
 (defhandler type-apply
-  (lambda (procedure-cell operand-cells calling-environment)
+  (lambda (unbuilt-procedure operand-cells calling-environment)
     (if (not (= (length (procedure-parameters 
-                          (get-procedure-proc procedure-cell)))
+                          (procedure-proc unbuilt-procedure)))
                 (length operand-cells)))
       (error "Wrong number of operands supplied"))
     ; build the procedure if it hasn't been built
     (type-apply-cell
-      (type-eval-procedure procedure-cell)
+      (type-eval-procedure unbuilt-procedure)
       operands
       calling-environment))
-  procedure-cell? any? any?)
+  unbuilt-procedure? any? any?)
 
 (define (type-eval-operand parameter-name operand environment)
   (type-eval operand environment))

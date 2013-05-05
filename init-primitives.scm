@@ -917,3 +917,10 @@
       (e:constant (list (e:constant type:symbol) (e:constant type:symbol)))
       (e:constant (type:union type:boolean)))
     env))
+
+(define (init-primitives env)
+  (define-primitive-func! '+ + 
+    (e:cons 
+      (e:constant (list (e:constant type:number) (e:constant type:number)))
+      (e:constant (type:union type:number)))
+    env))

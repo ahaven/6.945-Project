@@ -7,7 +7,7 @@
 (load "interpreter/utils" user-initial-environment)
 (load "interpreter/syntax" user-initial-environment)
 ;;; This section is inserted into the copied part so that we can have an inferencer thing
-(load "function-types" user-initial-environment)
+(load "unbuilt-procedure" user-initial-environment)
 (load "type-inferencer" user-initial-environment)
 ;(load "build-primitive-type-cell" generic-evaluation-environment)
 ;(load "primitive-def-handlers" generic-evaluation-environment)
