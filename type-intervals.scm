@@ -98,16 +98,31 @@
   (p:type-upper-bound out t1)
   (p:type-upper-bound out t2))
 
+(define-propagator (c:type-intersection t1 t2 out)
+  (p:type:binary-intersection t1 t2 out)
+  (p:type-lower-bound out t1)
+  (p:type-lower-bound out t2))
+
 ; assumes that t1 and t2 contain lists that are the same length
 (define-propagator (c:for-each propagator t1 t2)
   (p:unless (t1 t2 propagator) (e:null? t1)
     (propagator (e:car t1) (e:car t2))
     (c:for-each propagator (e:cdr t1) (e:cdr t2))))
-    
 
-;; 
-;(define (type-function-output-bound t))
+(define-propagator (c:for-each-type<= t1 t2)
+  (p:unless (t1 t2 propagator) (e:null? t1)
+    (c:type<= (e:car t1) (e:car t2))
+    (c:for-each-type<= (e:cdr t1) (e:cdr t2))))
 
-;(define-propagator (c:function-output f out)
-;  (p:
-  
+(define (type-lower-bound-of t)
+  (cond ((type? t) t)
+        ((type-interval? t) (type:interval-low t))
+        (else type:none)))
+
+(define (type-upper-bound-of t)
+  (cond ((type? t) t)
+        ((type-interval? t) (type:interval-high t))
+        (else type:any)))
+
+(propagatify type-lower-bound-of)
+(propagatify type-upper-bound-of)
