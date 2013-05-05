@@ -123,6 +123,13 @@
                     (e:constant (car l))))
               (e:constant-list (cdr l)))))
 
+(define (cell-map proc cell)
+  (let ((c (content cell)))
+    (if (null? c) 
+      '()
+      (cons (proc (content (car c))) 
+            (cell-map proc (cdr c))))))
+
 (define (type-lower-bound-of t)
   (cond ((type? t) t)
         ((type-interval? t) (type:interval-low t))
