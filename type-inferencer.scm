@@ -35,8 +35,8 @@
   (cond ((no-more-exps? expr) (e:constant (type:none)))
         ((last-exp? expr) (type-eval (first-exp expr) env))
         (else 
-			(begin (type-eval (first-exp expr) env)
-				   (type-eval-sequence (rest-exps expr) env)))))
+	      (begin (type-eval (first-exp expr) env)
+                 (type-eval-sequence (rest-exps expr) env)))))
 
 (defhandler type-eval
   (lambda (expr env)
@@ -95,10 +95,10 @@
     (let* ((vars (procedure-parameters proc))
            (bproc (procedure-body proc))
            (env (procedure-environment proc))
-           (var-cells (map vars (lambda (var) (make-cell))))
+           (var-cells (map (lambda (var) (make-cell)) vars))
            (newenv (extend-environment
                     vars
-                    (map vars (lambda (var) '()))
+                    (map (lambda (var) '()) vars)
                     var-cells
                     env)))
       (p:cons (e:constant-list var-cells) ; inputs
@@ -133,7 +133,7 @@
 
 (defhandler type-apply
   (lambda (unbuilt-procedure operand-cells calling-environment)
-    (if (not (= (length (procedure-parameters 
+    (if (not (= (length (procedure-parameters
                           (procedure-proc unbuilt-procedure)))
                 (length operand-cells)))
       (error "Wrong number of operands supplied"))
