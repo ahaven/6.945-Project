@@ -1,3 +1,4 @@
+;;;---------------- Eval ----------------
 ;;; Type evaluator/inferencer
 
 (define (default-type-eval expression environment)
@@ -7,9 +8,6 @@
                      environment))
         (else
           (error "Unknown expression type" expression))))
-
-(define (default-apply procedure operands calling-environment)
-  (error "Unknown procedure type" procedure))
 
 (define type-eval
   (make-generic-operator 2 'type-eval default-type-eval))
@@ -49,20 +47,6 @@
     (type-eval (let->combination expr) env))
   let? any?)
 
-;; this needs to be the default, not a separate case.
-;; (defhandler type-eval
-;;   (lambda (expr env)
-;;     (pp (list 'application expr))
-;;     (let-cell out
-;;       (let ((opcell (type-eval (operator expr) env))
-;;             (argcells (map (lambda (exp) (type-eval exp env))
-;;                            (operands expr))))
-;;         ; step 1. divide up function
-;;         ; step 2. ?????
-;;         ; step 3. profit!
-;;         out)))
-;;   application? any?)
-
 ;; Naive version of if, not specializing cases where the predicate
 ;; is always true or always false
 (defhandler type-eval
@@ -79,3 +63,46 @@
   (lambda (expression environment)
     (type-eval (cond->if expression) environment))
   cond? any?)
+
+;;;---------------- Apply ----------------
+
+(define (default-type-apply procedure operands calling-environment)
+  (error "Unknown procedure type" procedure))
+
+(define type-apply
+  (make-generic-operator 2 'type-apply default-type-apply))
+
+(defhandler type-apply
+  (lambda (procedure-cell operand-cells calling-environment)
+    (if (not (= (length (procedure-parameters 
+                          (get-procedure-proc procedure-cell)))
+                (length operand-cells)))
+      (error "Wrong number of operands supplied"))
+    (let ((arguments
+           (map (lambda (parameter-name operand)
+                  (type-eval-operand parameter-name
+                                     operand
+                                     calling-environment))
+                (procedure-parameters
+                  (get-procedure-proc procedure-cell))
+                operand-cells)))
+      (type-eval-procedure procedure-cell)
+      ; tie inputs
+      ; tie output
+    ))
+  procedure-cell? any? any?)
+
+
+;; this needs to be the default, not a separate case.
+;; (defhandler type-eval
+;;   (lambda (expr env)
+;;     (pp (list 'application expr))
+;;     (let-cell out
+;;       (let ((opcell (type-eval (operator expr) env))
+;;             (argcells (map (lambda (exp) (type-eval exp env))
+;;                            (operands expr))))
+;;         ; step 1. divide up function
+;;         ; step 2. ?????
+;;         ; step 3. profit!
+;;         out)))
+;;   application? any?)
