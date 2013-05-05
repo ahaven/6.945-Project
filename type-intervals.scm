@@ -98,6 +98,13 @@
   (p:type-upper-bound out t1)
   (p:type-upper-bound out t2))
 
+; assumes that t1 and t2 contain lists that are the same length
+(define-propagator (c:for-each propagator t1 t2)
+  (p:unless (t1 t2 propagator) (e:null? t1)
+    (propagator (e:car t1) (e:car t2))
+    (c:for-each propagator (e:cdr t1) (e:cdr t2))))
+    
+
 ;; 
 ;(define (type-function-output-bound t))
 

@@ -74,13 +74,13 @@ Goal: Put in a function's code, get its type.
     - set!
 3) Make presenation
   - Introduction
-  - Demo at beginning 
+  - Demo at beginning
   - Our type implementation / lattice
   - Modifications to enviroment
     - Adding types to environments [to be later explained]
     - calling type-extract
   - Cells
-    - How cells are hooked together 
+    - How cells are hooked together
     - What a cell looks like
     - Interval
   - Demo at end

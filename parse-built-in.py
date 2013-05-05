@@ -106,7 +106,9 @@ def init_primitives():
         # Otherwise create new cell
         return """\n
   (define-primitive-func! '%s %s 
-    (e:constant (-> %s %s))
+    (e:cons 
+      (e:constant (list %s))
+      (e:constant (type:union %s)))
     env)""" % \
         (name, name, " ".join(inputs), " ".join(outputs))
 

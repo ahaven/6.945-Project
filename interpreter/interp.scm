@@ -61,11 +61,17 @@
                        environment))
   begin? any?)
 
+(define (procedure-cell->type cell)
+  (type:function (content (car cell)) (content (cdr cell))))
+
 (defhandler eval
   (lambda (expression environment)
     (let ((cell (type-eval (type-expr expression) environment)))
       (run)
-      (content cell)))
+      (let ((output (content cell)))
+        (if (pair? output)
+          (procedure-cell->type output)
+          output))))
   type-extract? any?)
 
 (define (evaluate-sequence actions environment)

@@ -83,12 +83,13 @@
 
 (defhandler type-eval
   (lambda (expression environment)
-    (new-function-cell expression environment))
-  compound-expression? any?)
+    (new-procedure-cell expression))
+  compound-procedure? any?)
 
+; that were defined
 (define (type-eval-procedure f)
-  (let ((output-cell (procedure-cell f))
-        (proc (procedure-proc f)))
+  (let ((output-cell (get-procedure-cell f))
+        (proc (get-procedure-proc f)))
     ; TODO: switch on whether this type has already been calculated
     ; as is, we just duplicate the constraints if we call this again
     (let* ((vars (procedure-parameters proc))
@@ -102,7 +103,8 @@
                     env)))
       (p:cons (e:constant var-cells) ; inputs
               (type-eval-sequence bproc newenv) ; output
-              output-cell))))
+              output-cell))
+    output-cell))
 
 ;;;---------------- Apply ----------------
 
@@ -110,7 +112,27 @@
   (error "Unknown procedure type" procedure))
 
 (define type-apply
-  (make-generic-operator 2 'type-apply default-type-apply))
+  (make-generic-operator 3 'type-apply default-type-apply))
+
+; primitive procedures 
+(defhandler type-apply
+  (lambda (procedure-cell operand-cells calling-environment)
+    
+;    (if (not (= (length (procedure-parameters 
+;                          (get-procedure-proc procedure-cell)))
+;                (length operand-cells)))
+;      (error "Wrong number of operands supplied"))
+    (let-cell ((arguments (e:constant
+                            (map (lambda (operand)
+                                   (type-eval operand 
+                                              calling-environment))
+                                  operand-cells))))
+        (c:for-each c:type<= 
+                    arguments 
+                    (e:car procedure-cell)))
+      ; return output cell
+      (e:cdr procedure-cell))
+  cell? any? any?)
 
 (defhandler type-apply
   (lambda (procedure-cell operand-cells calling-environment)
@@ -118,20 +140,24 @@
                           (get-procedure-proc procedure-cell)))
                 (length operand-cells)))
       (error "Wrong number of operands supplied"))
-    (let ((arguments
-           (map (lambda (parameter-name operand)
-                  (type-eval-operand parameter-name
-                                     operand
-                                     calling-environment))
-                (procedure-parameters
-                  (get-procedure-proc procedure-cell))
-                operand-cells)))
-      (type-eval-procedure procedure-cell)
-      ; tie inputs
-      ; tie output
-    ))
+    ; build the procedure if it hasn't been built
+    (let ((built-procedure-cell (type-eval-procedure procedure-cell)))
+      ; todo e constant might not be neceessary
+      ; tie arguments to input of procedure-cell
+      (let-cell ((arguments (e:constant
+                              (map (lambda (operand)
+                                     (type-eval operand 
+                                                calling-environment))
+                                    operand-cells))))
+        (c:for-each c:type<= 
+                    arguments 
+                    (e:car built-procedure-cell)))
+      ; tie output and "return it"
+      (e:cdr (built-procedure-cell))))
   procedure-cell? any? any?)
 
+(define (type-eval-operand parameter-name operand environment)
+  (type-eval operand environment))
 
 ;; this needs to be the default, not a separate case.
 ;; (defhandler type-eval

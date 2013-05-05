@@ -101,7 +101,7 @@ string->number    string -> number # actually is string [radix = 2,8,10,16] -> n
 # http://web.mit.edu/scheme_v9.0.1/doc/mit-scheme-ref/Fixnum-and-Flonum-Operations.html#Fixnum-and-Flonum-Operations
 
 # http://web.mit.edu/scheme_v9.0.1/doc/mit-scheme-ref/Random-Numbers.html#Random-Numbers
-random    number
+random    number -> number
 -flo:random-unit
 -*random-state*
 -make-random-state
