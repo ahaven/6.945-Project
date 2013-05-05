@@ -68,18 +68,20 @@ http://groups.csail.mit.edu/mac/projects/scheme/documentation/scheme_11.html#SEC
 
 (define the-unknown-value (list '*the-unknown-value*))
 
-(define (lookup-var var env should-get-value-as-opposed-to-type)
+; can look up value or type
+(define (lookup-var var env get-value?)
   (let plp ((env env))
     (if (eq? env the-empty-environment)
-		(if should-get-value-as-opposed-to-type
-			(lookup-scheme-value var)
-			(error "can't find in environment to get its type:" var))
-		(let scan
-			((vars (environment-variables env))
-			 (vals (if should-get-value-as-opposed-to-type (environment-values env) (environment-types env))))
-			(cond ((null? vars) (plp (environment-parent env)))
-				  ((eq? var (car vars)) (car vals))
-				  (else (scan (cdr vars) (cdr vals))))))))
+        (if get-value?
+            (lookup-scheme-value var)
+            (error "can't find in environment to get its type:" var))
+        (let scan ((vars (environment-variables env))
+                   (vals (if get-value? 
+                             (environment-values env) 
+                             (environment-types env))))
+          (cond ((null? vars) (plp (environment-parent env)))
+                ((eq? var (car vars)) (car vals))
+                (else (scan (cdr vars) (cdr vals))))))))
 
 (define (lookup-variable-value var env)
   (lookup-var var env true))
