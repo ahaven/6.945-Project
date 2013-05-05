@@ -34,8 +34,9 @@
 (define (type-eval-sequence expr env)
   (cond ((no-more-exps? expr) (e:constant (type:none)))
         ((last-exp? expr) (type-eval (first-exp expr) env))
-        (else ; TODO: consider environment changes (from, e.g., set! and define)
-         (type-eval-sequence (rest-exps expr) env))))
+        (else 
+			(begin (type-eval (first-exp expr) env)
+				   (type-eval-sequence (rest-exps expr) env)))))
 
 (defhandler type-eval
   (lambda (expr env)
@@ -46,6 +47,13 @@
   (lambda (expr env)
     (type-eval (let->combination expr) env))
   let? any?)
+  
+(defhandler type-eval
+  (lambda (expr env)
+	(begin (define-variable-type! (definition-variable expr) (type-eval (definition-value expr) env) env)
+		   (e:constant type:symbol)))
+  definition? any?)
+	
 
 ;; Naive version of if, not specializing cases where the predicate
 ;; is always true or always false

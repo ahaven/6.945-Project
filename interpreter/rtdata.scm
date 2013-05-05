@@ -66,6 +66,8 @@ http://groups.csail.mit.edu/mac/projects/scheme/documentation/scheme_11.html#SEC
 
 (define the-empty-environment (list '*the-empty-environment*))
 
+(define the-unknown-value (list '*the-unknown-value*))
+
 (define (lookup-var var env should-get-value-as-opposed-to-type)
   (let plp ((env env))
     (if (eq? env the-empty-environment)
@@ -90,7 +92,7 @@ http://groups.csail.mit.edu/mac/projects/scheme/documentation/scheme_11.html#SEC
 (define (lookup-scheme-value var)
   (lexical-reference generic-evaluation-environment var))
 
-(define (define-variable! var val env)
+(define (define-var! var val env defining-value-as-opposed-to-type)
   (if (eq? env the-empty-environment)
       (error "Unbound variable -- DEFINE" var) ;should not happen.
       (let scan
@@ -99,13 +101,19 @@ http://groups.csail.mit.edu/mac/projects/scheme/documentation/scheme_11.html#SEC
 	   (types (environment-types env)))
 	(cond ((null? vars)
 	       (environment-variables-set! env (cons var (environment-variables env)))
-	       (environment-values-set! env (cons val (environment-values env)))
-	       (environment-types-set! env (cons (type-eval val env) (environment-types env))))
+	       (environment-values-set! env (cons (if defining-value-as-opposed-to-type val the-unknown-value)   (environment-values env)))
+	       (environment-types-set!  env (cons (if defining-value-as-opposed-to-type (type-eval val env) val) (environment-types env))))
 	      ((eq? var (car vars))
-	       (set-car! vals val)
-	       (set-car! types (type-eval val env)))
+	       (set-car! vals  (if defining-value-as-opposed-to-type val the-unknown-value))
+	       (set-car! types (if defining-value-as-opposed-to-type (type-eval val env) val)))
 	      (else
 	       (scan (cdr vars) (cdr vals) (cdr types)))))))
+  
+(define (define-variable-type! var type env)
+  (define-var! var type env false))
+  
+(define (define-variable! var val env)
+  (define-var! var val env true))
 
 ; >>> This is a pretty dangerous function that allows for forcing the type in order 
 ; to have primitives in the "global" environment. I don't really want to have O(n^2) 
