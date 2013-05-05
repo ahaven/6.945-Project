@@ -114,24 +114,22 @@
 (define type-apply
   (make-generic-operator 3 'type-apply default-type-apply))
 
+; this assumes that the procedure is in cell-form
+(define (type-apply-cell procedure operands calling-environment)
+  ;; todo test for procedure parameter length vs operands length
+  (let-cell ((arguments (e:constant
+                          (map (lambda (operand)
+                                 (type-eval operand
+                                            calling-environment))
+                               operands))))
+    (c:for-each c:type<=
+                arguments
+                (e:car procedure)))
+  (e:cdr procedure))
+
 ; primitive procedures 
 (defhandler type-apply
-  (lambda (procedure-cell operand-cells calling-environment)
-    
-;    (if (not (= (length (procedure-parameters 
-;                          (get-procedure-proc procedure-cell)))
-;                (length operand-cells)))
-;      (error "Wrong number of operands supplied"))
-    (let-cell ((arguments (e:constant
-                            (map (lambda (operand)
-                                   (type-eval operand 
-                                              calling-environment))
-                                  operand-cells))))
-        (c:for-each c:type<= 
-                    arguments 
-                    (e:car procedure-cell)))
-      ; return output cell
-      (e:cdr procedure-cell))
+  type-apply-cell
   cell? any? any?)
 
 (defhandler type-apply
@@ -141,19 +139,10 @@
                 (length operand-cells)))
       (error "Wrong number of operands supplied"))
     ; build the procedure if it hasn't been built
-    (let ((built-procedure-cell (type-eval-procedure procedure-cell)))
-      ; todo e constant might not be neceessary
-      ; tie arguments to input of procedure-cell
-      (let-cell ((arguments (e:constant
-                              (map (lambda (operand)
-                                     (type-eval operand 
-                                                calling-environment))
-                                    operand-cells))))
-        (c:for-each c:type<= 
-                    arguments 
-                    (e:car built-procedure-cell)))
-      ; tie output and "return it"
-      (e:cdr (built-procedure-cell))))
+    (type-apply-cell
+      (type-eval-procedure procedure-cell)
+      operands
+      calling-environment))
   procedure-cell? any? any?)
 
 (define (type-eval-operand parameter-name operand environment)
