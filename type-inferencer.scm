@@ -27,12 +27,12 @@
   quoted? any?)
  
 (defhandler type-eval
-	(lambda (expr env)
-		(lookup-variable-type expr env))
-	symbol? any?)
+  (lambda (expr env)
+    (lookup-variable-type expr env))
+  symbol? any?)
 
 (define (type-eval-sequence expr env)
-  (cond ((no-more-exps? expr) (e:constant (type:none)))
+  (cond ((no-more-exps? expr) (e:constant type:none))
         ((last-exp? expr) (type-eval (first-exp expr) env))
         (else 
 	      (begin (type-eval (first-exp expr) env)
@@ -102,7 +102,7 @@
                     var-cells
                     env)))
       (p:cons (e:constant-list var-cells) ; inputs
-              (type-eval-sequence bproc newenv) ; output
+              (type-eval bproc newenv) ; output
               output-cell))
     output-cell))
 
