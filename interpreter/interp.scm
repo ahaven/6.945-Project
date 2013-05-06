@@ -62,18 +62,23 @@
   begin? any?)
 
 (define (procedure-cell->type cell)
-  (type:function (cell-map (lambda (x) x) 
-                           (car cell))
-                 (content (cdr cell))))
+  (let ((inputs (cell-map (lambda (x) x) (car cell)))
+        (output (content (cdr cell))))
+    (if (and (for-all? inputs type?)
+             (type? output))
+        (type:function inputs output)
+        (list inputs output))))
 
 (defhandler eval
   (lambda (expression environment)
     (let ((cell (type-eval (type-expr expression) environment)))
+      (if (unbuilt-procedure? cell)
+          (set! cell (type-eval-procedure cell)))
       (run)
       (let ((output (content cell)))
         (if (pair? output)
-          (procedure-cell->type output)
-          output))))
+            (procedure-cell->type output)
+            output))))
   type-extract? any?)
 
 (define (evaluate-sequence actions environment)
