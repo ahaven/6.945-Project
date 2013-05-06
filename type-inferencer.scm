@@ -140,7 +140,7 @@
     ; build the procedure if it hasn't been built
     (type-apply-cell
       (type-eval-procedure unbuilt-procedure)
-      operands
+      operand-cells
       calling-environment))
   unbuilt-procedure? any? any?)
 
