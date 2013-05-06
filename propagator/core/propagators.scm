@@ -61,7 +61,7 @@
 	   (not (cell? thing))
 	   (not (propagator? thing))
 	   (not (closure? thing)) ; TODO Forward reference :(
-	   (warn "Imputing propagator-constructor-hood" thing)
+	   ;(warn "Imputing propagator-constructor-hood" thing) ;; This was getting annoying
 	   #t)))
 
 (define (propagator-constructor! thing)
