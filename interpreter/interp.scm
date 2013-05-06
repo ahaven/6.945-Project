@@ -71,7 +71,7 @@
 
 (defhandler eval
   (lambda (expression environment)
-    (let ((cell (type-eval (type-expr expression) environment)))
+    (let ((cell (type-eval-sequence (type-exprs expression) environment)))
       (if (unbuilt-procedure? cell)
           (set! cell (type-eval-procedure cell)))
       (run)

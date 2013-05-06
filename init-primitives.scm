@@ -924,4 +924,46 @@
     (e:cons 
       (e:constant-list (list type:number type:number))
       (e:constant (type:union type:number)))
+    env)
+
+  (define-primitive-func! '- - 
+    (e:cons 
+      (e:constant-list (list type:number type:number))
+      (e:constant (type:union type:number)))
+    env)
+
+  (define-primitive-func! '* *
+    (e:cons 
+      (e:constant-list (list type:number type:number))
+      (e:constant (type:union type:number)))
+    env)
+  
+  (define-primitive-func! '= = 
+    (e:cons 
+      (e:constant-list (list type:number type:number))
+      (e:constant (type:union type:boolean)))
+    env)
+
+  (define-primitive-func! '< < 
+    (e:cons 
+      (e:constant-list (list type:number type:number))
+      (e:constant (type:union type:boolean)))
+    env)
+
+  (define-primitive-func! '> > 
+    (e:cons 
+      (e:constant-list (list type:number type:number))
+      (e:constant (type:union type:boolean)))
+    env)
+
+  (define-primitive-func! '<= <= 
+    (e:cons 
+      (e:constant-list (list type:number type:number))
+      (e:constant (type:union type:boolean)))
+    env)
+
+  (define-primitive-func! '>= >= 
+    (e:cons 
+      (e:constant-list (list type:number type:number))
+      (e:constant (type:union type:boolean)))
     env))

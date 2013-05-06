@@ -18,11 +18,11 @@ number?     any -> boolean
 -inexact->exact   number -> number
 -exact->inexact   number -> number
 
-=     number ... -> number #!inexact
-<     number ... -> number #!inexact
->     number ... -> number #!inexact
-<=    number ... -> number #!inexact
->=    number ... -> number #!inexact
+=     number ... -> boolean #!inexact
+<     number ... -> boolean #!inexact
+>     number ... -> boolean #!inexact
+<=    number ... -> boolean #!inexact
+>=    number ... -> boolean #!inexact
 
 zero?     number -> boolean #!inexact
 positive? number -> boolean #!inexact

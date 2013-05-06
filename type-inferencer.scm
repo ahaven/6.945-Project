@@ -90,21 +90,23 @@
 (define (type-eval-procedure f)
   (let ((output-cell (procedure-cell f))
         (proc (procedure-proc f)))
-    ; TODO: switch on whether this type has already been calculated
-    ; as is, we just duplicate the constraints if we call this again
-    (let* ((vars (procedure-parameters proc))
-           (bproc (procedure-body proc))
-           (env (procedure-environment proc))
-           (var-cells (map (lambda (var) (make-cell)) vars))
-           (newenv (extend-environment
-                    vars
-                    (map (lambda (var) '()) vars)
-                    var-cells
-                    env)))
-      (p:cons (e:constant-list var-cells) ; inputs
-              (type-eval bproc newenv) ; output
-              output-cell))
-    output-cell))
+    (if (procedure-built? f)
+        output-cell
+        (begin
+          (let* ((vars (procedure-parameters proc))
+                 (bproc (procedure-body proc))
+                 (env (procedure-environment proc))
+                 (var-cells (map (lambda (var) (make-cell)) vars))
+                 (newenv (extend-environment
+                          vars
+                          (map (lambda (var) '()) vars)
+                          (map ce:type<=-tight-upper var-cells)
+                          env)))
+            (procedure-building! f)
+            (p:cons (e:constant-list var-cells) ; inputs
+                    (type-eval bproc newenv) ; output
+                    output-cell))
+          output-cell))))
 
 ;;;---------------- Apply ----------------
 

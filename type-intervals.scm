@@ -142,3 +142,11 @@
 
 (propagatify type-lower-bound-of)
 (propagatify type-upper-bound-of)
+
+(define-propagator (c:type<=-tight-upper t1 t2)
+  (p:type-lower-bound t1 t2)
+  (p:type-upper-bound-of t2 t1))
+
+(define-propagator (c:type<=-tight-lower t1 t2)
+  (p:type-lower-bound-of t1 t2)
+  (p:type-upper-bound t2 t1))

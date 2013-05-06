@@ -185,7 +185,7 @@
   (and (pair? exp)
        (eq? (car exp) 'type-extract)))
 
-(define (type-expr typexp) (cadr typexp))
+(define (type-exprs typexp) (cdr typexp))
 
 (define (amb? exp)
   (and (pair? exp) (eq? (car exp) 'amb)))
