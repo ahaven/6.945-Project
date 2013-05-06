@@ -100,7 +100,8 @@
                  (newenv (extend-environment
                           vars
                           (map (lambda (var) '()) vars)
-                          (map ce:type<=-tight-upper var-cells)
+                          var-cells
+                          ;(map ce:type<=-tight-upper var-cells)
                           env)))
             (procedure-building! f)
             (p:cons (e:constant-list var-cells) ; inputs

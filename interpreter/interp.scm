@@ -64,9 +64,11 @@
 (define (procedure-cell->type cell)
   (let ((inputs (cell-map (lambda (x) x) (car cell)))
         (output (content (cdr cell))))
-    (if (and (for-all? inputs type?)
-             (type? output))
-        (type:function inputs output)
+    (if (and (for-all? inputs (lambda (t) (or (type? t) (type-interval? t))))
+             (or (type? output) (type-interval? output)))
+        (type:function
+         (map type-upper-bound-of inputs)
+         (type-lower-bound-of output))
         (list inputs output))))
 
 (defhandler eval
