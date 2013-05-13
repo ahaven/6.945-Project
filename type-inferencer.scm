@@ -96,7 +96,7 @@
           (let* ((vars (procedure-parameters proc))
                  (bproc (procedure-body proc))
                  (env (procedure-environment proc))
-                 (var-cells (map (lambda (var) (make-cell)) vars))
+                 (var-cells (map (lambda (var) (e:constant (type:make-variable))) vars))
                  (newenv (extend-environment
                           vars
                           (map (lambda (var) '()) vars)

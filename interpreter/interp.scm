@@ -61,26 +61,21 @@
                        environment))
   begin? any?)
 
-(define (procedure-cell->type cell)
-  (let ((inputs (cell-map (lambda (x) x) (car cell)))
-        (output (content (cdr cell))))
-    (if (and (for-all? inputs (lambda (t) (or (type? t) (type-interval? t))))
-             (or (type? output) (type-interval? output)))
-        (type:function
-         (map type-upper-bound-of inputs)
-         (type-lower-bound-of output))
-        (list inputs output))))
+(define (cell->type cell)
+  (run)
+  (if (unbuilt-procedure? cell)
+      (cell->type (type-eval-procedure cell))
+      (let ((output (if (cell? cell) (content cell) cell)))
+        (if (pair? output)
+            (type:function
+             (map type-upper-bound-of
+                  (cell-map cell->type (car output)))
+             (type-lower-bound-of (cell->type (cdr output))))
+            output))))
 
 (defhandler eval
   (lambda (expression environment)
-    (let ((cell (type-eval-sequence (type-exprs expression) environment)))
-      (if (unbuilt-procedure? cell)
-          (set! cell (type-eval-procedure cell)))
-      (run)
-      (let ((output (content cell)))
-        (if (pair? output)
-            (procedure-cell->type output)
-            output))))
+    (cell->type (type-eval-sequence (type-exprs expression) environment)))
   type-extract? any?)
 
 (define (evaluate-sequence actions environment)
