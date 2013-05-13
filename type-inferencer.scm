@@ -87,11 +87,13 @@
   (lambda (x) (compound-procedure? x)) any?)
 
 ; that were defined
+; returns output-cell callback
+; the call back re-inits the procedure-cell if it was the top-level call (i.e. not the internal call of a recursive call), but if it is the outmost external call to the recursive call.
 (define (type-eval-procedure f)
   (let ((output-cell (procedure-cell f))
         (proc (procedure-proc f)))
     (if (procedure-built? f)
-        output-cell
+        (cons output-cell (lambda () 'ok))
         (begin
           (let* ((vars (procedure-parameters proc))
                  (bproc (procedure-body proc))
@@ -107,7 +109,7 @@
             (p:cons (e:constant-list var-cells) ; inputs
                     (type-eval bproc newenv) ; output
                     output-cell))
-          output-cell))))
+          (cons output-cell (lambda () (procedure-unbuild! f)))))))
 
 ;;;---------------- Apply ----------------
 
@@ -141,10 +143,13 @@
                 (length operand-cells)))
       (error "Wrong number of operands supplied"))
     ; build the procedure if it hasn't been built
-    (type-apply-cell
-      (type-eval-procedure unbuilt-procedure)
-      operand-cells
-      calling-environment))
+    (let ((built-response (type-eval-procedure unbuilt-procedure)))
+      (let ((answer (type-apply-cell
+                      (output-cell built-response)
+                      operand-cells
+                      calling-environment)))
+        ((unbuild-if-outermost built-response))
+        answer)))
   unbuilt-procedure? any? any?)
 
 (define (type-eval-operand parameter-name operand environment)
