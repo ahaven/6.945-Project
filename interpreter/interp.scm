@@ -64,7 +64,10 @@
 (define (cell->type cell)
   (run)
   (if (unbuilt-procedure? cell)
-      (cell->type (type-eval-procedure cell))
+      (let ((built-response (type-eval-procedure cell)))
+        (set! cell (output-cell built-response))
+        ((unbuild-if-outermost built-response))
+        (cell->type cell))
       (let ((output (if (cell? cell) (content cell) cell)))
         (if (pair? output)
             (type:function

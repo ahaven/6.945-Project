@@ -209,15 +209,15 @@
   (p:type-lower-bound out t2))
 
 ; assumes that t1 and t2 contain lists that are the same length
-(define-propagator (c:for-each propagator t1 t2)
-  (p:unless (t1 t2 propagator) (e:null? t1)
-    (propagator (e:car t1) (e:car t2))
-    (c:for-each propagator (e:cdr t1) (e:cdr t2))))
-
 (define-propagator (c:for-each-type<= t1 t2)
-  (p:unless (t1 t2 propagator) (e:null? t1)
+  (p:unless (t1 t2) (e:null? t1)
     (c:type<= (e:car t1) (e:car t2))
     (c:for-each-type<= (e:cdr t1) (e:cdr t2))))
+
+(define-propagator (c:for-each-id t1 t2)
+  (p:unless (t1 t2) (e:null? t1)
+    (c:id (e:car t1) (e:car t2))
+    (c:for-each-id (e:cdr t1) (e:cdr t2))))
 
 (define (e:constant-list l)
   (if (null? l)
