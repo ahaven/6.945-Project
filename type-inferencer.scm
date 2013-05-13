@@ -127,7 +127,7 @@
                                  (type-eval operand
                                             calling-environment))
                                operands))))
-    (c:for-each-type<=
+    (c:for-each-id
                 arguments
                 (e:car procedure)))
   (e:cdr procedure))

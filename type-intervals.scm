@@ -109,6 +109,11 @@
     (c:type<= (e:car t1) (e:car t2))
     (c:for-each-type<= (e:cdr t1) (e:cdr t2))))
 
+(define-propagator (c:for-each-id t1 t2)
+  (p:unless (t1 t2) (e:null? t1)
+    (c:id (e:car t1) (e:car t2))
+    (c:for-each-id (e:cdr t1) (e:cdr t2))))
+
 (define (e:constant-list l)
   (if (null? l)
       (e:constant '())
