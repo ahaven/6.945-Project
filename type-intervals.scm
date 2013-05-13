@@ -185,14 +185,30 @@
   (p:type-lower-bound t1 t2)
   (p:type-upper-bound t2 t1))
 
-(define (type:extended-union t1 t2)
-  (if (type-variable? t1) (set! t1 (content (type:variable-cell t1))))
-  (if (type-variable? t2) (set! t2 (content (type:variable-cell t2))))
+(define (type:underlying-extended-union t1 t2)
   (if (type? t1) (set! t1 (type:make-interval t1 t1)))
   (if (type? t2) (set! t2 (type:make-interval t2 t2)))
   (if (or (not (type-interval? t1)) (not (type-interval? t2)))
-      (error ("type:extended union of non-type argument")))
+      (error "type:extended union of non-type argument" t1 t2))
   (type:interval-extend-simplify t1 t2))
+
+(propagatify type:underlying-extended-union)
+
+(define (type:extended-union t1 t2)
+  (if (and (type-variable? t1)
+           (type-variable? t2))
+      (if (eq? (type:variable-name t1) (type:variable-name t2))
+          (make-type-variable (type:variable-name t1)
+                              (e:type:underlying-extended-union
+                               (type:variable-cell t1)
+                               (type:variable-cell t2)))
+          nothing)
+      (begin
+        (if (type-variable? t1) (set! t1 (content (type:variable-cell t1))))
+        (if (type-variable? t2) (set! t2 (content (type:variable-cell t2))))
+        (if (or (nothing? t1) (nothing? t2))
+            nothing
+            (type:underlying-extended-union t1 t2)))))
 
 (propagatify type:binary-union)
 (propagatify type:binary-intersection)

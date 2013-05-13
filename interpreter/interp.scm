@@ -61,7 +61,9 @@
                        environment))
   begin? any?)
 
-(define (cell->type cell)
+(define (cell->type cell #!optional unwrap-variables?)
+  (if (default-object? unwrap-variables?)
+      (set! unwrap-variables? #t))
   (run)
   (if (unbuilt-procedure? cell)
       (let ((built-response (type-eval-procedure cell)))
@@ -69,12 +71,18 @@
         ((unbuild-if-outermost built-response))
         (cell->type cell))
       (let ((output (if (cell? cell) (content cell) cell)))
-        (if (pair? output)
-            (type:function
-             (map type-upper-bound-of
-                  (cell-map cell->type (car output)))
-             (type-lower-bound-of (cell->type (cdr output))))
-            output))))
+        (cond ((pair? output)
+               (type:function
+                (map type-upper-bound-of
+                     (cell-map
+                      (lambda (cell) (cell->type cell #f))
+                      (car output)))
+                (type-lower-bound-of (cell->type (cdr output) #f))))
+              ((type:variable? output)
+               (if unwrap-variables?
+                   (cell->type (type:variable-cell output))
+                   output))
+              (else output)))))
 
 (defhandler eval
   (lambda (expression environment)
